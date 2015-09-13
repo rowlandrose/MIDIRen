@@ -1,50 +1,59 @@
 // Constants
-var UX16_PORT = 1; // midi port UX16 happens to be on
+var MIDI_IO_PORT = 1; // midi port UX16 happens to be on
+var BEATS_PER_MEASURE = 4;
+var BPM = 120;
+var PPQ = 1; // Pulse Per Quarter-note (beat), 4 = sixteenth notes
+var MS_PER_TICK = 1000 / (BPM / 60) / PPQ;
+var NS_PER_TICK = MS_PER_TICK * 1000000;
 
-/*console.log('Testing process timing in node');
-var time = process.hrtime();
-// [ 1800216, 25 ]
+var MEASURES_BEFORE_QUIT = 10;
 
-setTimeout(function() {
-  var diff = process.hrtime(time);
-  // [ 1, 552 ]
+var midi = require('midi'); // Include midi library
 
-  console.log('benchmark took %d nanoseconds', diff[0] * 1e9 + diff[1]);
-  // benchmark took 1000000527 nanoseconds
-}, 1000);*/
-var midi = require('midi');
+console.log('Testing basic beat generation');
 
-// Set up a new input.
-var input = new midi.input();
+////////////////////
+// Handle midi input
+var midi_input = new midi.input();
 
-// Count the available input ports.
-input.getPortCount();
+midi_input.on('message', function(deltaTime, message) {
 
-// Get the name of a specified input port.
-//console.log(input.getPortName(1));
-
-// Configure a callback.
-input.on('message', function(deltaTime, message) {
-  // The message is an array of numbers corresponding to the MIDI bytes:
-  //   [status, data1, data2]
-  // https://www.cs.cf.ac.uk/Dave/Multimedia/node158.html has some helpful
-  // information interpreting the messages.
   console.log('m:' + message + ' d:' + deltaTime);
+  midi_output.sendMessage(message);
 });
 
-// Open the first available input port.
-input.openPort(UX16_PORT);
-
-// Sysex, timing, and active sensing messages are ignored
-// by default. To enable these message types, pass false for
-// the appropriate type in the function below.
-// Order: (Sysex, Timing, Active Sensing)
-// For example if you want to receive only MIDI Clock beats
-// you should use
-// input.ignoreTypes(true, false, true)
-input.ignoreTypes(false, false, false);
-
-// ... receive MIDI messages ...
+midi_input.openPort(MIDI_IO_PORT);
 
 // Close the port when done.
-//input.closePort();
+//midi_input.closePort();
+
+/////////////////////
+// Handle midi output
+var midi_output = new midi.output();
+midi_output.openPort(MIDI_IO_PORT);
+
+var time = process.hrtime();
+var midi_output_timeout;
+var prev_tick = MS_PER_TICK;
+
+run_output_timeout(0);
+
+function run_output_timeout() {
+
+  midi_output_timeout = setTimeout(function() {
+
+    midi_output.sendMessage([148, 57, 127]);
+    setTimeout(function(){ midi_output.sendMessage([148, 57, 0]); }, 250);
+
+    var diff = process.hrtime(time);
+    time = process.hrtime();
+
+    prev_tick = prev_tick - ((diff[1] - NS_PER_TICK) / 1000000);
+
+    run_output_timeout();
+
+  }, prev_tick);
+}
+
+// Close the port when done.
+//midi_output.closePort();
