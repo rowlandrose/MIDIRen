@@ -19,6 +19,16 @@ var p_t1_sn = [
   '-----x-------x--',
   '----x---x-------'
 ];
+var p_t2 = [
+  '---o--cc-o-o----',
+  '---l-l-----l-l--',
+  '----------------',
+  '----------------',
+  '----------------',
+  '----------------',
+  '----------------',
+  '----------------',
+]
 
 // Constants
 var MIDI_IO_PORT = 1; // midi port UX16 happens to be on
@@ -35,9 +45,12 @@ var midi = require('midi'); // Include midi library
 
 var current_clock = CLOCK_PER_CLICK;
 var current_pulse = 0;
+
 var current_pattern_t1 = 0;
 var selected_pattern_t1 = 0;
 var que_pattern_t1 = 0;
+
+var current_rand_t1 = 0;
 
 console.log('Testing basic beat generation');
 
@@ -48,8 +61,10 @@ var midi_input = new midi.input();
 
 midi_input.on('message', function(deltaTime, message) {
 
-  // MIDI Thru
-  midi_output.sendMessage(message);
+  // MIDI Thru (only notes)
+  if(message[0] == 148) {
+    midi_output.sendMessage(message);
+  }
 
   //console.log(message);
 
@@ -59,6 +74,10 @@ midi_input.on('message', function(deltaTime, message) {
   }
   if(message[0] == 180 && message[1] == 113 && message[2] > 0) {
     que_pattern_t1 = selected_pattern_t1;
+  }
+  // Get Random for Track 1
+  if(message[0] == 180 && message[1] == 3) {
+    current_rand_t1 = message[2];
   }
 
   // Sync to external BPM
@@ -107,10 +126,25 @@ function run_output_timeout() {
 
 function midi_logic_per_tick() {
 
-  if(p_t1_bd[current_pattern_t1].charAt(current_pulse) == 'x') {
+  // Random Track 1
+  // current_pulse > 0 ----> makes sure that the bd hits on 0, sounds better
+  if(Math.floor(Math.random() * 7) + 1 <= current_rand_t1 && current_pulse > 0){
+    r_applied_t1 = Math.floor(Math.random() * 16);
+  } else {
+    r_applied_t1 = current_pulse;
+  }
+  // Track 1 BD
+  console.log(r_applied_t1);
+  if(p_t1_bd[current_pattern_t1].charAt(r_applied_t1) == 'x') {
 
     midi_output.sendMessage([148, 57, 127]);
     setTimeout(function(){ midi_output.sendMessage([148, 57, 0]); }, 250);
+  }
+  // Track 1 SN
+  if(p_t1_sn[current_pattern_t1].charAt(r_applied_t1) == 'x') {
+
+    midi_output.sendMessage([148, 60, 127]);
+    setTimeout(function(){ midi_output.sendMessage([148, 60, 0]); }, 250);
   }
   if(current_pulse + 1 == BEATS_PER_MEASURE * PPQ) {
     current_pulse = 0;
