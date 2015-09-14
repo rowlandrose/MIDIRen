@@ -36,6 +36,8 @@ var midi = require('midi'); // Include midi library
 var current_clock = CLOCK_PER_CLICK;
 var current_pulse = 0;
 var current_pattern_t1 = 0;
+var selected_pattern_t1 = 0;
+var que_pattern_t1 = 0;
 
 console.log('Testing basic beat generation');
 
@@ -53,7 +55,10 @@ midi_input.on('message', function(deltaTime, message) {
 
   // Get Pattern for Track 1
   if(message[0] == 180 && message[1] == 24) {
-    current_pattern_t1 = message[2];
+    selected_pattern_t1 = message[2];
+  }
+  if(message[0] == 180 && message[1] == 113 && message[2] > 0) {
+    que_pattern_t1 = selected_pattern_t1;
   }
 
   // Sync to external BPM
@@ -109,6 +114,7 @@ function midi_logic_per_tick() {
   }
   if(current_pulse + 1 == BEATS_PER_MEASURE * PPQ) {
     current_pulse = 0;
+    current_pattern_t1 = que_pattern_t1;
   } else {
     current_pulse++;
   }
