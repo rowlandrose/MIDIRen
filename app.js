@@ -21,14 +21,42 @@ var p_t1_sn = [
 ];
 var p_t2 = [
   '---o--cc-o-o----',
-  '---l-l-----l-l--',
-  '----------------',
-  '----------------',
-  '----------------',
-  '----------------',
-  '----------------',
-  '----------------',
-]
+  '---p-p-----p-p--',
+  '--p-----y--p-p-p',
+  '--------hhhhllll',
+  'c-c-c-c-c-c-c-c-',
+  '--o--coc--o--o-o',
+  'c---c---c---c---',
+  '--hh--l---h-l-l-',
+];
+var p_t2_letter_to_notenum = {
+  '-' : 0,
+  'o' : 56,
+  'c' : 55,
+  'p' : 40,
+  'y' : 54,
+  'h' : 72,
+  'l' : 71
+}
+// Key:
+// o -> Open Hi Hat
+// c -> Closed Hi Hat
+// p -> Clap
+// y -> Cymbol
+// h -> High Tom
+// l -> Low Tom
+
+var current_pattern_t1 = 0;
+var current_pattern_t2 = 0;
+
+var selected_pattern_t1 = 0;
+var selected_pattern_t2 = 0;
+
+var que_pattern_t1 = 0;
+var que_pattern_t2 = 0;
+
+var current_rand_t1 = 0;
+var current_rand_t2 = 0;
 
 // Constants
 var MIDI_IO_PORT = 1; // midi port UX16 happens to be on
@@ -45,12 +73,6 @@ var midi = require('midi'); // Include midi library
 
 var current_clock = CLOCK_PER_CLICK;
 var current_pulse = 0;
-
-var current_pattern_t1 = 0;
-var selected_pattern_t1 = 0;
-var que_pattern_t1 = 0;
-
-var current_rand_t1 = 0;
 
 console.log('Testing basic beat generation');
 
@@ -78,6 +100,18 @@ midi_input.on('message', function(deltaTime, message) {
   // Get Random for Track 1
   if(message[0] == 180 && message[1] == 3) {
     current_rand_t1 = message[2];
+  }
+
+  // Get Pattern for Track 2
+  if(message[0] == 180 && message[1] == 25) {
+    selected_pattern_t2 = message[2];
+  }
+  if(message[0] == 180 && message[1] == 114 && message[2] > 0) {
+    que_pattern_t2 = selected_pattern_t2;
+  }
+  // Get Random for Track 2
+  if(message[0] == 180 && message[1] == 9) {
+    current_rand_t2 = message[2];
   }
 
   // Sync to external BPM
@@ -126,15 +160,21 @@ function run_output_timeout() {
 
 function midi_logic_per_tick() {
 
-  // Random Track 1
   // current_pulse > 0 ----> makes sure that the bd hits on 0, sounds better
+  // Random Track 1
   if(Math.floor(Math.random() * 7) + 1 <= current_rand_t1 && current_pulse > 0){
     r_applied_t1 = Math.floor(Math.random() * 16);
   } else {
     r_applied_t1 = current_pulse;
   }
+  // Random Track 2
+  if(Math.floor(Math.random() * 7) + 1 <= current_rand_t2 && current_pulse > 0){
+    r_applied_t2 = Math.floor(Math.random() * 16);
+  } else {
+    r_applied_t2 = current_pulse;
+  }
   // Track 1 BD
-  console.log(r_applied_t1);
+  console.log('r_applied_t1: '+r_applied_t1+'r_applied_t2, '+r_applied_t2);
   if(p_t1_bd[current_pattern_t1].charAt(r_applied_t1) == 'x') {
 
     midi_output.sendMessage([148, 57, 127]);
@@ -146,9 +186,21 @@ function midi_logic_per_tick() {
     midi_output.sendMessage([148, 60, 127]);
     setTimeout(function(){ midi_output.sendMessage([148, 60, 0]); }, 250);
   }
+  // Track 2
+  var t2_char = p_t2[current_pattern_t2].charAt(r_applied_t2);
+  var t2_notenum = p_t2_letter_to_notenum[t2_char];
+  if(t2_notenum > 0) {
+
+    // Timeout on initial message so BD and SN can trigger, NES quirk
+    setTimeout(function(){ midi_output.sendMessage([148, t2_notenum, 127]); }, 15);
+    setTimeout(function(){ midi_output.sendMessage([148, t2_notenum, 0]); }, 250);
+  }
+
+  // Pulse Logic
   if(current_pulse + 1 == BEATS_PER_MEASURE * PPQ) {
     current_pulse = 0;
     current_pattern_t1 = que_pattern_t1;
+    current_pattern_t2 = que_pattern_t2;
   } else {
     current_pulse++;
   }
