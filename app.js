@@ -27,7 +27,7 @@ var p_t2 = [
   'c-c-c-c-c-c-c-c-',
   '--o--coc--o--o-o',
   'c---c---c---c---',
-  '--hh--l---h-l-l-',
+  '--hh--l---h--l-l',
 ];
 var p_t2_letter_to_notenum = {
   '-' : 0,
@@ -37,7 +37,7 @@ var p_t2_letter_to_notenum = {
   'y' : 54,
   'h' : 72,
   'l' : 71
-}
+};
 // Key:
 // o -> Open Hi Hat
 // c -> Closed Hi Hat
@@ -45,6 +45,57 @@ var p_t2_letter_to_notenum = {
 // y -> Cymbol
 // h -> High Tom
 // l -> Low Tom
+
+var p_t3 = [
+  'x==>-xxxx==>-xxx',
+  'x--xx--xxxxx-xxx',
+  'x>-xx>-xx>-xx>-x',
+  'x==>-x=>x==>-x=>',
+  '--xxx>-xx>-xx>--',
+  'xxxx----xxxx----',
+  'x-x-x-x-x-x-x-x-',
+  'xx--xx--xx--xx--'
+];
+var p_t4 = [
+  'x==>-xxxx==>-xxx',
+  'x--xx--xxxxx-xxx',
+  'x>-xx>-xx>-xx>-x',
+  'x==>-x=>x==>-x=>',
+  '--xxx>-xx>-xx>--',
+  'xxxx----xxxx----',
+  'x-x-x-x-x-x-x-x-',
+  'xx--xx--xx--xx--'
+];
+var p_t5 = [
+  'x==>-xxxx==>-xxx',
+  'x--xx--xxxxx-xxx',
+  'x>-xx>-xx>-xx>-x',
+  'x==>-x=>x==>-x=>',
+  '--xxx>-xx>-xx>--',
+  'xxxx----xxxx----',
+  'x-x-x-x-x-x-x-x-',
+  'xx--xx--xx--xx--'
+];
+var p_t6 = [
+  'x==>-xxxx==>-xxx',
+  'x--xx--xxxxx-xxx',
+  'x>-xx>-xx>-xx>-x',
+  'x==>-x=>x==>-x=>',
+  '--xxx>-xx>-xx>--',
+  'xxxx----xxxx----',
+  'x-x-x-x-x-x-x-x-',
+  'xx--xx--xx--xx--'
+];
+var p_t7 = [
+  'x==>-xxxx==>-xxx',
+  'x--xx--xxxxx-xxx',
+  'x>-xx>-xx>-xx>-x',
+  'x==>-x=>x==>-x=>',
+  '--xxx>-xx>-xx>--',
+  'xxxx----xxxx----',
+  'x-x-x-x-x-x-x-x-',
+  'xx--xx--xx--xx--'
+];
 
 var current_pattern_t1 = 0;
 var current_pattern_t2 = 0;
