@@ -6,10 +6,10 @@ Requirements
 Hardware
 --------
 - 1 Raspberry Pi 2
-- 1 Yamaha UX16 USB Midi Interface (only one tested)
-- 1 Korg Taktile 49 (only MIDI control surface tested, any should work with tweaks)
+- 1 MIDI Interface (tested on Yamaha UX16)
+- 1 MIDI Control Surface (tested on Korg Taktile 49)
 
-Pre-requisite software (that isn't default on Raspbian)
+Software on Raspberry Pi (that isn't installed by default on Raspbian)
 ----------------------
 - Node.js
 - libasound2-dev

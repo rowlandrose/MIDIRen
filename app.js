@@ -219,7 +219,7 @@ function midi_logic_per_tick() {
     r_applied_t1 = current_pulse;
   }
   // Random Track 2
-  if(Math.floor(Math.random() * 7) + 1 <= current_rand_t2 && current_pulse > 0){
+  if(Math.floor(Math.random() * 7) + 1 <= current_rand_t2){
     r_applied_t2 = Math.floor(Math.random() * 16);
   } else {
     r_applied_t2 = current_pulse;
