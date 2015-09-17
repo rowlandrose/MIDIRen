@@ -207,10 +207,16 @@ var que_pattern_t6 = 0;
 
 var current_rand_t1 = 0;
 var current_rand_t2 = 0;
-var current_rand_t3 = 0;
-var current_rand_t4 = 0;
-var current_rand_t5 = 0;
-var current_rand_t6 = 0;
+
+var current_note_t3 = 0;
+var current_note_t4 = 0;
+var current_note_t5 = 0;
+var current_note_t6 = 0;
+
+var current_t3_num = 0;
+var current_t4_num = 0;
+var current_t5_num = 0;
+var current_t6_num = 0;
 
 // Constants
 var MIDI_IO_PORT = 1; // midi port UX16 happens to be on
@@ -229,7 +235,10 @@ var midi = require('midi'); // Include midi library
 var current_clock = CLOCK_PER_CLICK;
 var current_pulse = 0;
 var root_note = 60;
-var current_chord = 'I';
+var current_chord_progression = 1; // 0 to 15
+var prog_spot = 0;
+var current_chord = chord_progressions[current_chord_progression][prog_spot];
+var current_root = root_note + chord_positions[current_chord];
 
 var midi_output = new midi.output();
 midi_output.openPort(MIDI_IO_PORT);
@@ -239,7 +248,7 @@ var midi_input = new midi.input();
 midi_input.on('message', function(deltaTime, message) {
 
   // MIDI Thru (only notes)
-  if(message[0] == 148) {
+  if(message[0] == 144 || message[0] == 128) {
     midi_output.sendMessage(message);
   }
 
@@ -328,34 +337,86 @@ function midi_logic_per_tick() {
   } else {
     r_applied_t2 = current_pulse;
   }
+  /////////////
   // Track 1 BD
-  console.log('r_applied_t1: '+r_applied_t1+'r_applied_t2, '+r_applied_t2);
+  //console.log('r_applied_t1: '+r_applied_t1+'r_applied_t2, '+r_applied_t2);
   if(p_t1_bd[current_pattern_t1].charAt(r_applied_t1) == 'x') {
 
     midi_output.sendMessage([148, 57, 127]);
     setTimeout(function(){ midi_output.sendMessage([148, 57, 0]); }, 250);
   }
+  /////////////
   // Track 1 SN
   if(p_t1_sn[current_pattern_t1].charAt(r_applied_t1) == 'x') {
 
     midi_output.sendMessage([148, 60, 127]);
     setTimeout(function(){ midi_output.sendMessage([148, 60, 0]); }, 250);
   }
+  //////////
   // Track 2
   var t2_char = p_t2[current_pattern_t2].charAt(r_applied_t2);
   var t2_notenum = p_t2_letter_to_notenum[t2_char];
   if(t2_notenum > 0) {
 
     // Timeout on initial message so BD and SN can trigger, NES quirk
-    setTimeout(function(){ midi_output.sendMessage([148, t2_notenum, 127]); }, 15);
+    setTimeout(function(){ midi_output.sendMessage([148, t2_notenum, 127]); }, 10);
     setTimeout(function(){ midi_output.sendMessage([148, t2_notenum, 0]); }, 250);
   }
+  //////////
+  // Track 3
+  var t3_char = p_t3[current_pattern_t3].charAt(current_pulse);
 
+  var prev_pulse = current_pulse - 1;
+  if(prev_pulse < 0) {
+    prev_pulse = (BEATS_PER_MEASURE * PPQ) - 1;
+  }
+  var t3_char_prev = p_t3[current_pattern_t3].charAt(prev_pulse);
+
+  if(t3_char == 'x') {
+
+    var chord_num = parseInt(p_t3_n[current_note_t3].charAt(current_pulse));
+    var chord_spot = chord_num % chord_notes[current_chord].length;
+    var translated_num = chord_notes[current_chord][chord_spot];
+    console.log('chord_num: '+chord_num);
+    console.log('chord_spot: '+chord_spot);
+    console.log('translated_num: '+translated_num);
+    var chord_octaves = Math.floor(chord_num / chord_notes[current_chord].length);
+    translated_num += chord_octaves * 12;
+    console.log('chord_octaves: '+chord_octaves);
+    console.log('translated_num: '+translated_num);
+    console.log('-----');
+    current_t3_num = translated_num + current_root;
+    //current_t3_num = current_root;
+
+    // If prev char was 'x', then send midi note off
+    if(t3_char_prev == 'x' || t3_char_prev == '>') {
+      midi_output.sendMessage([128, current_t3_num, 60]);
+    }
+
+    midi_output.sendMessage([144, current_t3_num, 60]);
+
+  } else if(t3_char == '-') {
+
+    // If prev char was 'x', then send midi note off
+    if(t3_char_prev == 'x' || t3_char_prev == '>') {
+      midi_output.sendMessage([128, current_t3_num, 60]);
+    }
+
+  }
+
+  //////////////
   // Pulse Logic
   if(current_pulse + 1 == BEATS_PER_MEASURE * PPQ) {
     current_pulse = 0;
     current_pattern_t1 = que_pattern_t1;
     current_pattern_t2 = que_pattern_t2;
+
+    prog_spot++;
+    if(prog_spot >= chord_progressions[current_chord_progression].length) {
+      prog_spot = 0;
+    }
+    current_chord = chord_progressions[current_chord_progression][prog_spot];
+    current_root = root_note + chord_positions[current_chord];
   } else {
     current_pulse++;
   }
