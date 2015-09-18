@@ -449,17 +449,23 @@ function midi_logic_per_tick() {
     // If prev char was 'x', then send midi note off
     if(t3_char_prev == 'x' || t3_char_prev == '>'
       || current_pattern_t3 != prev_t3_p) {
-      midi_output.sendMessage([128, current_t3_num, 60]);
+      midi_output.sendMessage([128, current_t3_num+12, 30]);
+      midi_output.sendMessage([129, current_t3_num, 30]);
+      midi_output.sendMessage([130, current_t3_num-12, 30]);
     }
 
-    midi_output.sendMessage([144, current_t3_num, 60]);
+    midi_output.sendMessage([144, current_t3_num+12, 30]);
+    midi_output.sendMessage([145, current_t3_num, 30]);
+    midi_output.sendMessage([146, current_t3_num-12, 30]);
 
   } else if(t3_char == '-') {
 
     // If prev char was 'x', then send midi note off
     if(t3_char_prev == 'x' || t3_char_prev == '>'
       || current_pattern_t3 != prev_t3_p) {
-      midi_output.sendMessage([128, current_t3_num, 60]);
+      midi_output.sendMessage([128, current_t3_num+12, 30]);
+      midi_output.sendMessage([129, current_t3_num, 30]);
+      midi_output.sendMessage([130, current_t3_num-12, 30]);
     }
   }
 
