@@ -35,7 +35,6 @@ function midi_logic_per_tick() {
   }
   ///////////////////
   // Track 1 - NES BD
-  //console.log('r_applied_t1: '+r_applied_t1+'r_applied_t2, '+r_applied_t2);
   if(p_t1_bd[current_pattern_t1].charAt(r_applied_t1) == 'x') {
 
     midi_output.sendMessage([148, 57, 127]);
@@ -60,7 +59,6 @@ function midi_logic_per_tick() {
   }
   //////////////////////////
   // Track 3 - NES Mega Inst
-  console.log(current_pattern_t3+' '+selected_pattern_t3+' '+que_pattern_t3);
   var t3_char = p_t3[current_pattern_t3].charAt(current_pulse);
 
   var prev_pulse = current_pulse - 1;
@@ -110,8 +108,7 @@ function midi_logic_per_tick() {
   prev_t3_p = current_pattern_t3;
 
   //////////////////////
-  // Track 4 - Shruthi-1
-  console.log(current_pattern_t4+' '+selected_pattern_t4+' '+que_pattern_t4);
+  // Track 4 - Shruthi-1=
   var t4_char = p_t4[current_pattern_t4].charAt(current_pulse);
 
   var prev_pulse = current_pulse - 1;
@@ -181,4 +178,16 @@ function midi_logic_per_tick() {
   } else {
     current_pulse++;
   }
+}
+
+function midi_panic() {
+
+  // All notes off on channel 14 (Shruthi-1)
+  for(var i = 0; i <= 127; i++) {
+    midi_output.sendMessage([141, i, 30]);
+  }
+  // Single note off message on channels 1-3 (NES)
+  midi_output.sendMessage([128, 0, 30]);
+  midi_output.sendMessage([129, 0, 30]);
+  midi_output.sendMessage([130, 0, 30]);
 }

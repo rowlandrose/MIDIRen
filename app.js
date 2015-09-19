@@ -1,3 +1,4 @@
+console.log('MIDIRen now running. Enjoy!');
 //////////
 // Include
 var fs = require('fs');
@@ -11,88 +12,104 @@ var midi_input = new midi.input();
 
 midi_input.on('message', function(deltaTime, message) {
 
-  // MIDI Thru (only notes)
-  if(message[0] == 144 || message[0] == 128) {
+  // MIDI Thru (only notes on/off and cc1 and pitch bend on channels 1-15)
+  if( (message[0] >= 144 && message[0] <= 158)
+    || (message[0] >= 128 && message[0] <= 142)
+    || (message[0] >= 176 && message[0] <= 190)
+    || (message[0] >= 224 && message[0] <= 238) ) {
     midi_output.sendMessage(message);
   }
 
-  //console.log(message);
-
   // Play / Pause
-  if(message[0] == 176 && message[1] == 77 && message[2] > 0) {
+  if(message[0] == 191 && message[1] == 77 && message[2] > 0) {
     midiren_play = false;
+    midi_panic();
+    current_pulse = 0;
+    prog_spot = 0;
+    current_chord = chord_progressions[current_chord_progression][prog_spot];
+    current_root = root_note + chord_positions[current_chord];
   }
-  if(message[0] == 176 && message[1] == 78 && message[2] > 0) {
+  if(message[0] == 191 && message[1] == 78 && message[2] > 0) {
     midiren_play = true;
   }
 
+  // Set root note for any note coming in on channel 16
+  if(message[0] == 159 && message[2] > 0) {
+    root_note = message[1];
+  }
+
+  // Set chord progression
+  if(message[0] == 159 && message[2] > 0) {
+    root_note = message[1];
+  }
+
   // Get Pattern for Track 1
-  if(message[0] == 176 && message[1] == 24) {
+  if(message[0] == 191 && message[1] == 24) {
     selected_pattern_t1 = message[2];
   }
-  if(message[0] == 176 && message[1] == 113 && message[2] > 0) {
+  if(message[0] == 191 && message[1] == 113 && message[2] > 0) {
     que_pattern_t1 = selected_pattern_t1;
   }
   // Get Random for Track 1
-  if(message[0] == 176 && message[1] == 3) {
+  if(message[0] == 191 && message[1] == 3) {
     current_rand_t1 = message[2];
   }
 
   // Get Pattern for Track 2
-  if(message[0] == 176 && message[1] == 25) {
+  if(message[0] == 191 && message[1] == 25) {
     selected_pattern_t2 = message[2];
   }
-  if(message[0] == 176 && message[1] == 114 && message[2] > 0) {
+  if(message[0] == 191 && message[1] == 114 && message[2] > 0) {
     que_pattern_t2 = selected_pattern_t2;
   }
   // Get Random for Track 2
-  if(message[0] == 176 && message[1] == 9) {
+  if(message[0] == 191 && message[1] == 9) {
     current_rand_t2 = message[2];
   }
 
   // Get Pattern for Track 3
-  if(message[0] == 176 && message[1] == 26) {
+  if(message[0] == 191 && message[1] == 26) {
     selected_pattern_t3 = message[2];
   }
-  if(message[0] == 176 && message[1] == 115 && message[2] > 0) {
+  if(message[0] == 191 && message[1] == 115 && message[2] > 0) {
     que_pattern_t3 = selected_pattern_t3;
   }
   // Get Pattern for Track 4
-  if(message[0] == 176 && message[1] == 27) {
+  if(message[0] == 191 && message[1] == 27) {
     selected_pattern_t4 = message[2];
   }
-  if(message[0] == 176 && message[1] == 116 && message[2] > 0) {
+  if(message[0] == 191 && message[1] == 116 && message[2] > 0) {
     que_pattern_t4 = selected_pattern_t4;
   }
   // Get Pattern for Track 5
-  if(message[0] == 176 && message[1] == 28) {
+  if(message[0] == 191 && message[1] == 28) {
     selected_pattern_t5 = message[2];
   }
-  if(message[0] == 176 && message[1] == 117 && message[2] > 0) {
+  if(message[0] == 191 && message[1] == 117 && message[2] > 0) {
     que_pattern_t5 = selected_pattern_t5;
   }
   // Get Pattern for Track 6
-  if(message[0] == 176 && message[1] == 29) {
+  if(message[0] == 191 && message[1] == 29) {
     selected_pattern_t6 = message[2];
   }
-  if(message[0] == 176 && message[1] == 118 && message[2] > 0) {
+  if(message[0] == 191 && message[1] == 118 && message[2] > 0) {
     que_pattern_t6 = selected_pattern_t6;
   }
 
   // Get Note Pattern for Track 3
-  if(message[0] == 176 && message[1] == 14) {
+  if(message[0] == 191 && message[1] == 14) {
     que_note_t3 = message[2];
   }
   // Get Note Pattern for Track 4
-  if(message[0] == 176 && message[1] == 15) {
+  if(message[0] == 191 && message[1] == 15) {
     que_note_t4 = message[2];
   }
   // Get Note Pattern for Track 5
-  if(message[0] == 176 && message[1] == 20) {
+  if(message[0] == 191 && message[1] == 20) {
     que_note_t5 = message[2];
   }
   // Get Note Pattern for Track 6
-  if(message[0] == 176 && message[1] == 21) {
+  if(message[0] == 191 && message[1] == 21) {
     que_note_t6 = message[2];
   }
 
