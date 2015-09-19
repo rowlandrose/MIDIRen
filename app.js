@@ -39,8 +39,69 @@ midi_input.on('message', function(deltaTime, message) {
   }
 
   // Set chord progression
-  if(message[0] == 159 && message[2] > 0) {
-    root_note = message[1];
+  if(message[0] == 191 && message[1] == 17 && message[2] > 0) {
+    current_chord_progression = 0;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 18 && message[2] > 0) {
+    current_chord_progression = 1;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 19 && message[2] > 0) {
+    current_chord_progression = 2;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 80 && message[2] > 0) {
+    current_chord_progression = 3;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 81 && message[2] > 0) {
+    current_chord_progression = 4;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 82 && message[2] > 0) {
+    current_chord_progression = 5;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 83 && message[2] > 0) {
+    current_chord_progression = 6;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 12 && message[2] > 0) {
+    current_chord_progression = 7;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 13 && message[2] > 0) {
+    current_chord_progression = 8;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 46 && message[2] > 0) {
+    current_chord_progression = 9;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 71 && message[2] > 0) {
+    current_chord_progression = 10;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 72 && message[2] > 0) {
+    current_chord_progression = 11;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 73 && message[2] > 0) {
+    current_chord_progression = 12;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 74 && message[2] > 0) {
+    current_chord_progression = 13;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 75 && message[2] > 0) {
+    current_chord_progression = 14;
+    prog_spot = 999;
+  }
+  if(message[0] == 191 && message[1] == 76 && message[2] > 0) {
+    current_chord_progression = 15;
+    prog_spot = 999;
   }
 
   // Get Pattern for Track 1
