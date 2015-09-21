@@ -37,15 +37,15 @@ function midi_logic_per_tick() {
   // Track 1 - NES BD
   if(p_t1_bd[current_pattern_t1].charAt(r_applied_t1) == 'x') {
 
-    midi_output.sendMessage([148, 57, 127]);
-    setTimeout(function(){ midi_output.sendMessage([148, 57, 0]); }, 250);
+    midi_output.sendMessage([158, 57, 127]);
+    setTimeout(function(){ midi_output.sendMessage([158, 57, 0]); }, 250);
   }
   ///////////////////
   // Track 1 - NES SN
   if(p_t1_sn[current_pattern_t1].charAt(r_applied_t1) == 'x') {
 
-    midi_output.sendMessage([148, 60, 127]);
-    setTimeout(function(){ midi_output.sendMessage([148, 60, 0]); }, 250);
+    midi_output.sendMessage([158, 60, 127]);
+    setTimeout(function(){ midi_output.sendMessage([158, 60, 0]); }, 250);
   }
   /////////////////////////////////
   // Track 2 - Other NES Percussion
@@ -54,8 +54,8 @@ function midi_logic_per_tick() {
   if(t2_num > 0) {
 
     // Timeout on initial message so BD and SN can trigger, NES quirk
-    setTimeout(function(){ midi_output.sendMessage([148, t2_num, 127]); }, 10);
-    setTimeout(function(){ midi_output.sendMessage([148, t2_num, 0]); }, 250);
+    setTimeout(function(){ midi_output.sendMessage([158, t2_num, 127]); }, 10);
+    setTimeout(function(){ midi_output.sendMessage([158, t2_num, 0]); }, 250);
   }
   //////////////////////////
   // Track 3 - NES Mega Inst
@@ -86,23 +86,23 @@ function midi_logic_per_tick() {
     // If prev char was 'x', then send midi note off
     if(t3_char_prev == 'x' || t3_char_prev == '>'
       || current_pattern_t3 != prev_t3_p) {
-      midi_output.sendMessage([128, current_t3_num+12, 30]);
-      midi_output.sendMessage([129, current_t3_num, 30]);
-      midi_output.sendMessage([130, current_t3_num-12, 30]);
+      midi_output.sendMessage([138, current_t3_num+12, 30]);
+      midi_output.sendMessage([139, current_t3_num, 30]);
+      midi_output.sendMessage([140, current_t3_num-12, 30]);
     }
 
-    midi_output.sendMessage([144, current_t3_num+12, 30]);
-    midi_output.sendMessage([145, current_t3_num, 30]);
-    midi_output.sendMessage([146, current_t3_num-12, 30]);
+    midi_output.sendMessage([154, current_t3_num+12, 30]);
+    midi_output.sendMessage([155, current_t3_num, 30]);
+    midi_output.sendMessage([156, current_t3_num-12, 30]);
 
   } else if(t3_char == '-') {
 
     // If prev char was 'x', then send midi note off
     if(t3_char_prev == 'x' || t3_char_prev == '>'
       || current_pattern_t3 != prev_t3_p) {
-      midi_output.sendMessage([128, current_t3_num+12, 30]);
-      midi_output.sendMessage([129, current_t3_num, 30]);
-      midi_output.sendMessage([130, current_t3_num-12, 30]);
+      midi_output.sendMessage([138, current_t3_num+12, 30]);
+      midi_output.sendMessage([139, current_t3_num, 30]);
+      midi_output.sendMessage([140, current_t3_num-12, 30]);
     }
   }
   prev_t3_p = current_pattern_t3;
@@ -136,17 +136,17 @@ function midi_logic_per_tick() {
     // If prev char was 'x', then send midi note off
     if(t4_char_prev == 'x' || t4_char_prev == '>'
       || current_pattern_t4 != prev_t4_p) {
-      midi_output.sendMessage([141, current_t4_num, 30]);
+      midi_output.sendMessage([133, current_t4_num, 30]);
     }
 
-    midi_output.sendMessage([157, current_t4_num, 30]);
+    midi_output.sendMessage([149, current_t4_num, 30]);
 
   } else if(t4_char == '-') {
 
     // If prev char was 'x', then send midi note off
     if(t4_char_prev == 'x' || t4_char_prev == '>'
       || current_pattern_t4 != prev_t4_p) {
-      midi_output.sendMessage([141, current_t4_num, 30]);
+      midi_output.sendMessage([133, current_t4_num, 30]);
     }
   }
   prev_t4_p = current_pattern_t4;
@@ -184,10 +184,10 @@ function midi_panic() {
 
   // All notes off on channel 14 (Shruthi-1)
   for(var i = 0; i <= 127; i++) {
-    midi_output.sendMessage([141, i, 30]);
+    midi_output.sendMessage([133, i, 30]);
   }
   // Single note off message on channels 1-3 (NES)
-  midi_output.sendMessage([128, 0, 30]);
-  midi_output.sendMessage([129, 0, 30]);
-  midi_output.sendMessage([130, 0, 30]);
+  midi_output.sendMessage([138, 0, 30]);
+  midi_output.sendMessage([139, 0, 30]);
+  midi_output.sendMessage([140, 0, 30]);
 }
