@@ -798,7 +798,7 @@ function mr_set_velocity(mr_cc) {
     default:
       // no change
   }
-  data.track_velocity[track_num] = velocity; // set new velocity
+  pdata.track_velocity[track_num] = velocity; // set new velocity
 
   // Build velocity screen
   for(var i = 0; i < on_ccs.length; i++) {

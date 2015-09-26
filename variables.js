@@ -24,18 +24,135 @@ var presets = [
   {
     'track_velocity' : [127,127,127,127,127,127],
     'track_pattern' : [0,0,0,0,0,0],
-    'track_note_ran' : [0,0,0,0,0,0]
+    'track_note_ran' : [0,0,0,0,0,0],
+    'root_note' : 48,
+    'chord_prog' : 1,
+    'bpm' : 120,
+    'patterns' : {
+      't1_bd' : [
+        'x---x---x---x---',
+        'x--x---x-x-x----',
+        'x--x--x--x--x-x-',
+        'x------x-x------',
+        'x---x--x--x-----',
+        'x--x--x-----x---',
+        'x---x----x--x---',
+        'x----x--x----x--'
+      ],
+      't1_sn' : [
+        '----x-------x---',
+        '----x-------x---',
+        '----x--x--x-----',
+        '---x--------x---',
+        '----x---x---x---',
+        '----x--x---x----',
+        '-----x-------x--',
+        '----x---x-------'
+      ],
+      't2' : [
+        '---o--cc-o-o----',
+        '---p-p-----p-p--',
+        '--p-----y--p-p-p',
+        '--------hhhhllll',
+        'c-c-c-c-c-c-c-c-',
+        '--o--coc--o--o-o',
+        'c---c---c---c---',
+        '--hh--l---h--l-l',
+      ],
+      't3' : [
+        'x==>-xxxx==>-xxx',
+        'x--xx--xxxxx-xxx',
+        'x>-xx>-xx>-xx>-x',
+        'x==>-x=>x==>-x=>',
+        '--xxx>-xx>-xx>--',
+        'xxxx----xxxx----',
+        'x-x-x-x-x-x-x-x-',
+        'xx--xx--xx--xx--'
+      ],
+      't4' : [
+        'x==>-xxxx==>-xxx',
+        'x--xx--xxxxx-xxx',
+        'x>-xx>-xx>-xx>-x',
+        'x==>-x=>x==>-x=>',
+        '--xxx>-xx>-xx>--',
+        'xxxx----xxxx----',
+        'x-x-x-x-x-x-x-x-',
+        'xx--xx--xx--xx--'
+      ],
+      't5' : [
+        'x==>-xxxx==>-xxx',
+        'x--xx--xxxxx-xxx',
+        'x>-xx>-xx>-xx>-x',
+        'x==>-x=>x==>-x=>',
+        '--xxx>-xx>-xx>--',
+        'xxxx----xxxx----',
+        'x-x-x-x-x-x-x-x-',
+        'xx--xx--xx--xx--'
+      ],
+      't6' : [
+        'x==>-xxxx==>-xxx',
+        'x--xx--xxxxx-xxx',
+        'x>-xx>-xx>-xx>-x',
+        'x==>-x=>x==>-x=>',
+        '--xxx>-xx>-xx>--',
+        'xxxx----xxxx----',
+        'x-x-x-x-x-x-x-x-',
+        'xx--xx--xx--xx--'
+      ]
+    },
+    'notes' : {
+      't3' : [
+        '1111111111111111',
+        '111r111r111r111r',
+        '1124117111rr1111',
+        '1113311113161711',
+        '5115113112115181',
+        '11rr11rr11rr11rr',
+        '1r1r1r1r1r1r1r1r',
+        'rrrrrrrrrrrrrrrr'
+      ],
+      't4' : [
+        '1111322241113232',
+        '2233344455422334',
+        '6655655333444466',
+        '7776666rr6377r88',
+        '2377777662rr16rr',
+        '9997888677756664',
+        '1113222433354446',
+        'rrrrrrrrrrrrrrrr'
+      ],
+      't5' : [
+        '1123112346546542',
+        '6767545565234354',
+        '8985887767877566',
+        '564r564r5687rr35',
+        '11rr44rr11rr44rr',
+        '9876543219876543',
+        '1234566789123456',
+        'rrrrrrrrrrrrrrrr'
+      ],
+      't6' : [
+        '1234123412341234',
+        '1234561234561234',
+        '9876987698769876',
+        '7654765476547654',
+        '7654327654327654',
+        '7733773388266444',
+        '1r1r1r1r1r1r1r1r',
+        'rrrrrrrrrrrrrrrr'
+      ]
+    }
   }
 ];
 
 var selected_preset = 0;
 
-// clone current preset into 'data'
-var data = clone( presets[selected_preset] );
+// clone current preset into 'pdata'
+var pdata = clone( presets[selected_preset] );
 
 // Init velocity screen
 for(var i = 0; i < 6; i++) {
-  var m_cc = velocity_track_to_mr_cc(i + 1, data.track_velocity[i]);
+  var m_cc = velocity_track_to_mr_cc(i + 1, pdata.track_velocity[i]);
   mr_set_velocity(m_cc);
 }
 
