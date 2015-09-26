@@ -198,6 +198,551 @@ function midi_panic() {
 
 // MIDIRen set functions
 // Sets variable and changes LEDs on MIDIRen if neccessary
+
+function mr_set_chord_prog(mr_cc) {
+
+  var track_ccs = [
+    [44,40,36,32,12,8,4,0],
+    [45,41,37,33,13,9,5,1],
+    [46,42,38,34,14,10,6,2],
+    [47,43,39,35,15,11,7,3],
+    [60,56,52,48,28,24,20,16],
+    [61,57,53,49,29,25,21,17]
+  ];
+  var chord_progs = [
+    [42,36,30,24,18,12,6,0],
+    [43,37,31,25,19,13,7,1],
+    [44,38,32,26,20,14,8,2],
+    [45,39,33,27,21,15,9,3],
+    [46,40,34,28,22,16,10,4],
+    [47,41,35,29,23,17,11,5]
+  ];
+
+  // Build chord prog screen and update root note
+  for(var i = 0; i < track_ccs.length; i++) {
+    for(var j = 0; j < track_ccs[i].length; j++) {
+      if(track_ccs[i][j] == mr_cc) {
+        pdata.chord_prog = chord_progs[i][j];
+        mrs[mr_chord_prog_sn][mr_cc] = 127;
+      } else {
+        mrs[mr_chord_prog_sn][mr_cc] = 0;
+      }
+    }
+  }
+
+  if(mr_chord_prog_sn == mr_current_sn) {
+    mr_screen_refresh();
+  }
+}
+
+function mr_set_root_note(mr_cc) {
+
+  var track_ccs = [
+    [44,40,36,32,12,8,4,0],
+    [45,41,37,33,13,9,5,1],
+    [46,42,38,34,14,10,6,2],
+    [47,43,39,35,15,11,7,3],
+    [60,56,52,48,28,24,20,16],
+    [61,57,53,49,29,25,21,17]
+  ];
+  var root_notes = [
+    [24,30,36,42,48,54,60,66],
+    [25,31,37,43,49,55,61,67],
+    [26,32,38,44,50,56,62,68],
+    [27,33,39,45,51,57,63,69],
+    [28,34,40,46,52,58,64,70],
+    [29,35,41,47,53,59,65,71]
+  ];
+
+  // Build root note screen and update root note
+  for(var i = 0; i < track_ccs.length; i++) {
+    for(var j = 0; j < track_ccs[i].length; j++) {
+      if(track_ccs[i][j] == mr_cc) {
+        pdata.root_note = root_notes[i][j];
+        mrs[mr_root_note_sn][mr_cc] = 127;
+      } else {
+        mrs[mr_root_note_sn][mr_cc] = 0;
+      }
+    }
+  }
+
+  if(mr_root_note_sn == mr_current_sn) {
+    mr_screen_refresh();
+  }
+}
+
+function mr_set_note_ran(mr_cc) {
+
+  var track_num = 1;
+  var note_ran_num = 0;
+
+  var track_ccs = [
+    [44,40,36,32,12,8,4,0],
+    [45,41,37,33,13,9,5,1],
+    [46,42,38,34,14,10,6,2],
+    [47,43,39,35,15,11,7,3],
+    [60,56,52,48,28,24,20,16],
+    [61,57,53,49,29,25,21,17]
+  ];
+
+  switch(mr_cc) {
+
+    // Track 1
+    case 44:
+      track_num = 1;
+      note_ran_num = 0;
+      break;
+    case 40:
+      track_num = 1;
+      note_ran_num = 1;
+      break;
+    case 36:
+      track_num = 1;
+      note_ran_num = 2;
+      break;
+    case 32:
+      track_num = 1;
+      note_ran_num = 3;
+      break;
+    case 12:
+      track_num = 1;
+      note_ran_num = 4;
+      break;
+    case 8:
+      track_num = 1;
+      note_ran_num = 5;
+      break;
+    case 4:
+      track_num = 1;
+      note_ran_num = 6;
+      break;
+    case 0:
+      track_num = 1;
+      note_ran_num = 7;
+      break;
+
+    // Track 2
+    case 45:
+      track_num = 2;
+      note_ran_num = 0;
+      break;
+    case 41:
+      track_num = 2;
+      note_ran_num = 1;
+      break;
+    case 37:
+      track_num = 2;
+      note_ran_num = 2;
+      break;
+    case 33:
+      track_num = 2;
+      note_ran_num = 3;
+      break;
+    case 13:
+      track_num = 2;
+      note_ran_num = 4;
+      break;
+    case 9:
+      track_num = 2;
+      note_ran_num = 5;
+      break;
+    case 5:
+      track_num = 2;
+      note_ran_num = 6;
+      break;
+    case 1:
+      track_num = 2;
+      note_ran_num = 7;
+      break;
+
+    // Track 3
+    case 46:
+      track_num = 3;
+      note_ran_num = 0;
+      break;
+    case 42:
+      track_num = 3;
+      note_ran_num = 1;
+      break;
+    case 38:
+      track_num = 3;
+      note_ran_num = 2;
+      break;
+    case 34:
+      track_num = 3;
+      note_ran_num = 3;
+      break;
+    case 14:
+      track_num = 3;
+      note_ran_num = 4;
+      break;
+    case 10:
+      track_num = 3;
+      note_ran_num = 5;
+      break;
+    case 6:
+      track_num = 3;
+      note_ran_num = 6;
+      break;
+    case 2:
+      track_num = 3;
+      note_ran_num = 7;
+      break;
+
+    // Track 4
+    case 47:
+      track_num = 4;
+      note_ran_num = 0;
+      break;
+    case 43:
+      track_num = 4;
+      note_ran_num = 1;
+      break;
+    case 39:
+      track_num = 4;
+      note_ran_num = 2;
+      break;
+    case 35:
+      track_num = 4;
+      note_ran_num = 3;
+      break;
+    case 15:
+      track_num = 4;
+      note_ran_num = 4;
+      break;
+    case 11:
+      track_num = 4;
+      note_ran_num = 5;
+      break;
+    case 7:
+      track_num = 4;
+      note_ran_num = 6;
+      break;
+    case 3:
+      track_num = 4;
+      note_ran_num = 7;
+      break;
+
+    // Track 5
+    case 60:
+      track_num = 5;
+      note_ran_num = 0;
+      break;
+    case 56:
+      track_num = 5;
+      note_ran_num = 1;
+      break;
+    case 52:
+      track_num = 5;
+      note_ran_num = 2;
+      break;
+    case 48:
+      track_num = 5;
+      note_ran_num = 3;
+      break;
+    case 28:
+      track_num = 5;
+      note_ran_num = 4;
+      break;
+    case 24:
+      track_num = 5;
+      note_ran_num = 5;
+      break;
+    case 20:
+      track_num = 5;
+      note_ran_num = 6;
+      break;
+    case 16:
+      track_num = 5;
+      note_ran_num = 7;
+      break;
+
+    // Track 6
+    case 61:
+      track_num = 6;
+      note_ran_num = 0;
+      break;
+    case 57:
+      track_num = 6;
+      note_ran_num = 1;
+      break;
+    case 53:
+      track_num = 6;
+      note_ran_num = 2;
+      break;
+    case 49:
+      track_num = 6;
+      note_ran_num = 3;
+      break;
+    case 29:
+      track_num = 6;
+      note_ran_num = 4;
+      break;
+    case 25:
+      track_num = 6;
+      note_ran_num = 5;
+      break;
+    case 21:
+      track_num = 6;
+      note_ran_num = 6;
+      break;
+    case 17:
+      track_num = 6;
+      note_ran_num = 7;
+      break;
+
+    default:
+      // no change
+  }
+  pdata.track_note_ran[track_num] = note_ran_num; // set new pattern
+
+  // Update note/random screen. Clear then set for target track.
+  for(var i = 0; i < track_ccs[track_num - 1].length; i++) {
+    mrs[mr_note_ran_sn][track_ccs[track_num - 1][i]] = 0;
+  }
+  mrs[mr_note_ran_sn][mr_cc] = 127;
+
+  if(mr_note_ran_sn == mr_current_sn) {
+    mr_screen_refresh();
+  }
+}
+
+function mr_set_pattern(mr_cc) {
+
+  var track_num = 1;
+  var pattern_num = 0;
+
+  var track_ccs = [
+    [44,40,36,32,12,8,4,0],
+    [45,41,37,33,13,9,5,1],
+    [46,42,38,34,14,10,6,2],
+    [47,43,39,35,15,11,7,3],
+    [60,56,52,48,28,24,20,16],
+    [61,57,53,49,29,25,21,17]
+  ];
+
+  switch(mr_cc) {
+
+    // Track 1
+    case 44:
+      track_num = 1;
+      pattern_num = 0;
+      break;
+    case 40:
+      track_num = 1;
+      pattern_num = 1;
+      break;
+    case 36:
+      track_num = 1;
+      pattern_num = 2;
+      break;
+    case 32:
+      track_num = 1;
+      pattern_num = 3;
+      break;
+    case 12:
+      track_num = 1;
+      pattern_num = 4;
+      break;
+    case 8:
+      track_num = 1;
+      pattern_num = 5;
+      break;
+    case 4:
+      track_num = 1;
+      pattern_num = 6;
+      break;
+    case 0:
+      track_num = 1;
+      pattern_num = 7;
+      break;
+
+    // Track 2
+    case 45:
+      track_num = 2;
+      pattern_num = 0;
+      break;
+    case 41:
+      track_num = 2;
+      pattern_num = 1;
+      break;
+    case 37:
+      track_num = 2;
+      pattern_num = 2;
+      break;
+    case 33:
+      track_num = 2;
+      pattern_num = 3;
+      break;
+    case 13:
+      track_num = 2;
+      pattern_num = 4;
+      break;
+    case 9:
+      track_num = 2;
+      pattern_num = 5;
+      break;
+    case 5:
+      track_num = 2;
+      pattern_num = 6;
+      break;
+    case 1:
+      track_num = 2;
+      pattern_num = 7;
+      break;
+
+    // Track 3
+    case 46:
+      track_num = 3;
+      pattern_num = 0;
+      break;
+    case 42:
+      track_num = 3;
+      pattern_num = 1;
+      break;
+    case 38:
+      track_num = 3;
+      pattern_num = 2;
+      break;
+    case 34:
+      track_num = 3;
+      pattern_num = 3;
+      break;
+    case 14:
+      track_num = 3;
+      pattern_num = 4;
+      break;
+    case 10:
+      track_num = 3;
+      pattern_num = 5;
+      break;
+    case 6:
+      track_num = 3;
+      pattern_num = 6;
+      break;
+    case 2:
+      track_num = 3;
+      pattern_num = 7;
+      break;
+
+    // Track 4
+    case 47:
+      track_num = 4;
+      pattern_num = 0;
+      break;
+    case 43:
+      track_num = 4;
+      pattern_num = 1;
+      break;
+    case 39:
+      track_num = 4;
+      pattern_num = 2;
+      break;
+    case 35:
+      track_num = 4;
+      pattern_num = 3;
+      break;
+    case 15:
+      track_num = 4;
+      pattern_num = 4;
+      break;
+    case 11:
+      track_num = 4;
+      pattern_num = 5;
+      break;
+    case 7:
+      track_num = 4;
+      pattern_num = 6;
+      break;
+    case 3:
+      track_num = 4;
+      pattern_num = 7;
+      break;
+
+    // Track 5
+    case 60:
+      track_num = 5;
+      pattern_num = 0;
+      break;
+    case 56:
+      track_num = 5;
+      pattern_num = 1;
+      break;
+    case 52:
+      track_num = 5;
+      pattern_num = 2;
+      break;
+    case 48:
+      track_num = 5;
+      pattern_num = 3;
+      break;
+    case 28:
+      track_num = 5;
+      pattern_num = 4;
+      break;
+    case 24:
+      track_num = 5;
+      pattern_num = 5;
+      break;
+    case 20:
+      track_num = 5;
+      pattern_num = 6;
+      break;
+    case 16:
+      track_num = 5;
+      pattern_num = 7;
+      break;
+
+    // Track 6
+    case 61:
+      track_num = 6;
+      pattern_num = 0;
+      break;
+    case 57:
+      track_num = 6;
+      pattern_num = 1;
+      break;
+    case 53:
+      track_num = 6;
+      pattern_num = 2;
+      break;
+    case 49:
+      track_num = 6;
+      pattern_num = 3;
+      break;
+    case 29:
+      track_num = 6;
+      pattern_num = 4;
+      break;
+    case 25:
+      track_num = 6;
+      pattern_num = 5;
+      break;
+    case 21:
+      track_num = 6;
+      pattern_num = 6;
+      break;
+    case 17:
+      track_num = 6;
+      pattern_num = 7;
+      break;
+
+    default:
+      // no change
+  }
+  pdata.track_pattern[track_num] = pattern_num; // set new pattern
+
+  // Update pattern screen. Clear then set for target track.
+  for(var i = 0; i < track_ccs[track_num - 1].length; i++) {
+    mrs[mr_pattern_sn][track_ccs[track_num - 1][i]] = 0;
+  }
+  mrs[mr_pattern_sn][mr_cc] = 127;
+
+  if(mr_pattern_sn == mr_current_sn) {
+    mr_screen_refresh();
+  }
+}
+
 function mr_set_velocity(mr_cc) {
 
   var track_num = 1;
@@ -921,5 +1466,269 @@ function velocity_track_to_mr_cc(track_num, velocity) {
     return 61;
   }
 
+  return 0;
+}
+
+function pattern_track_to_mr_cc(track_num, pattern_num) {
+
+  if(track_num == 1 && pattern_num == 7) {
+    return 0;
+  } else if(track_num == 1 && pattern_num == 6) {
+    return 4;
+  } else if(track_num == 1 && pattern_num == 5) {
+    return 8;
+  } else if(track_num == 1 && pattern_num == 4) {
+    return 12;
+  } else if(track_num == 1 && pattern_num == 3) {
+    return 32;
+  } else if(track_num == 1 && pattern_num == 2) {
+    return 36;
+  } else if(track_num == 1 && pattern_num == 1) {
+    return 40;
+  } else if(track_num == 1 && pattern_num == 0) {
+    return 44;
+  } else if(track_num == 2 && pattern_num == 7) {
+    return 1;
+  } else if(track_num == 2 && pattern_num == 6) {
+    return 5;
+  } else if(track_num == 2 && pattern_num == 5) {
+    return 9;
+  } else if(track_num == 2 && pattern_num == 4) {
+    return 13;
+  } else if(track_num == 2 && pattern_num == 3) {
+    return 33;
+  } else if(track_num == 2 && pattern_num == 2) {
+    return 37;
+  } else if(track_num == 2 && pattern_num == 1) {
+    return 41;
+  } else if(track_num == 2 && pattern_num == 0) {
+    return 45;
+  } else if(track_num == 3 && pattern_num == 7) {
+    return 2;
+  } else if(track_num == 3 && pattern_num == 6) {
+    return 6;
+  } else if(track_num == 3 && pattern_num == 5) {
+    return 10;
+  } else if(track_num == 3 && pattern_num == 4) {
+    return 14;
+  } else if(track_num == 3 && pattern_num == 3) {
+    return 34;
+  } else if(track_num == 3 && pattern_num == 2) {
+    return 38;
+  } else if(track_num == 3 && pattern_num == 1) {
+    return 42;
+  } else if(track_num == 3 && pattern_num == 0) {
+    return 46;
+  } else if(track_num == 4 && pattern_num == 7) {
+    return 3;
+  } else if(track_num == 4 && pattern_num == 6) {
+    return 7;
+  } else if(track_num == 4 && pattern_num == 5) {
+    return 11;
+  } else if(track_num == 4 && pattern_num == 4) {
+    return 15;
+  } else if(track_num == 4 && pattern_num == 3) {
+    return 35;
+  } else if(track_num == 4 && pattern_num == 2) {
+    return 39;
+  } else if(track_num == 4 && pattern_num == 1) {
+    return 43;
+  } else if(track_num == 4 && pattern_num == 0) {
+    return 47;
+  } else if(track_num == 5 && pattern_num == 7) {
+    return 16;
+  } else if(track_num == 5 && pattern_num == 6) {
+    return 20;
+  } else if(track_num == 5 && pattern_num == 5) {
+    return 24;
+  } else if(track_num == 5 && pattern_num == 4) {
+    return 28;
+  } else if(track_num == 5 && pattern_num == 3) {
+    return 48;
+  } else if(track_num == 5 && pattern_num == 2) {
+    return 52;
+  } else if(track_num == 5 && pattern_num == 1) {
+    return 56;
+  } else if(track_num == 5 && pattern_num == 0) {
+    return 60;
+  } else if(track_num == 6 && pattern_num == 7) {
+    return 17;
+  } else if(track_num == 6 && pattern_num == 6) {
+    return 21;
+  } else if(track_num == 6 && pattern_num == 5) {
+    return 25;
+  } else if(track_num == 6 && pattern_num == 4) {
+    return 29;
+  } else if(track_num == 6 && pattern_num == 3) {
+    return 49;
+  } else if(track_num == 6 && pattern_num == 2) {
+    return 53;
+  } else if(track_num == 6 && pattern_num == 1) {
+    return 57;
+  } else if(track_num == 6 && pattern_num == 0) {
+    return 61;
+  }
+
+  return 0;
+}
+
+function note_ran_track_to_mr_cc(track_num, note_ran_num) {
+
+  if(track_num == 1 && note_ran_num == 7) {
+    return 0;
+  } else if(track_num == 1 && note_ran_num == 6) {
+    return 4;
+  } else if(track_num == 1 && note_ran_num == 5) {
+    return 8;
+  } else if(track_num == 1 && note_ran_num == 4) {
+    return 12;
+  } else if(track_num == 1 && note_ran_num == 3) {
+    return 32;
+  } else if(track_num == 1 && note_ran_num == 2) {
+    return 36;
+  } else if(track_num == 1 && note_ran_num == 1) {
+    return 40;
+  } else if(track_num == 1 && note_ran_num == 0) {
+    return 44;
+  } else if(track_num == 2 && note_ran_num == 7) {
+    return 1;
+  } else if(track_num == 2 && note_ran_num == 6) {
+    return 5;
+  } else if(track_num == 2 && note_ran_num == 5) {
+    return 9;
+  } else if(track_num == 2 && note_ran_num == 4) {
+    return 13;
+  } else if(track_num == 2 && note_ran_num == 3) {
+    return 33;
+  } else if(track_num == 2 && note_ran_num == 2) {
+    return 37;
+  } else if(track_num == 2 && note_ran_num == 1) {
+    return 41;
+  } else if(track_num == 2 && note_ran_num == 0) {
+    return 45;
+  } else if(track_num == 3 && note_ran_num == 7) {
+    return 2;
+  } else if(track_num == 3 && note_ran_num == 6) {
+    return 6;
+  } else if(track_num == 3 && note_ran_num == 5) {
+    return 10;
+  } else if(track_num == 3 && note_ran_num == 4) {
+    return 14;
+  } else if(track_num == 3 && note_ran_num == 3) {
+    return 34;
+  } else if(track_num == 3 && note_ran_num == 2) {
+    return 38;
+  } else if(track_num == 3 && note_ran_num == 1) {
+    return 42;
+  } else if(track_num == 3 && note_ran_num == 0) {
+    return 46;
+  } else if(track_num == 4 && note_ran_num == 7) {
+    return 3;
+  } else if(track_num == 4 && note_ran_num == 6) {
+    return 7;
+  } else if(track_num == 4 && note_ran_num == 5) {
+    return 11;
+  } else if(track_num == 4 && note_ran_num == 4) {
+    return 15;
+  } else if(track_num == 4 && note_ran_num == 3) {
+    return 35;
+  } else if(track_num == 4 && note_ran_num == 2) {
+    return 39;
+  } else if(track_num == 4 && note_ran_num == 1) {
+    return 43;
+  } else if(track_num == 4 && note_ran_num == 0) {
+    return 47;
+  } else if(track_num == 5 && note_ran_num == 7) {
+    return 16;
+  } else if(track_num == 5 && note_ran_num == 6) {
+    return 20;
+  } else if(track_num == 5 && note_ran_num == 5) {
+    return 24;
+  } else if(track_num == 5 && note_ran_num == 4) {
+    return 28;
+  } else if(track_num == 5 && note_ran_num == 3) {
+    return 48;
+  } else if(track_num == 5 && note_ran_num == 2) {
+    return 52;
+  } else if(track_num == 5 && note_ran_num == 1) {
+    return 56;
+  } else if(track_num == 5 && note_ran_num == 0) {
+    return 60;
+  } else if(track_num == 6 && note_ran_num == 7) {
+    return 17;
+  } else if(track_num == 6 && note_ran_num == 6) {
+    return 21;
+  } else if(track_num == 6 && note_ran_num == 5) {
+    return 25;
+  } else if(track_num == 6 && note_ran_num == 4) {
+    return 29;
+  } else if(track_num == 6 && note_ran_num == 3) {
+    return 49;
+  } else if(track_num == 6 && note_ran_num == 2) {
+    return 53;
+  } else if(track_num == 6 && note_ran_num == 1) {
+    return 57;
+  } else if(track_num == 6 && note_ran_num == 0) {
+    return 61;
+  }
+
+  return 0;
+}
+
+function root_note_to_mr_cc(note) {
+
+  var track_ccs = [
+    [44,40,36,32,12,8,4,0],
+    [45,41,37,33,13,9,5,1],
+    [46,42,38,34,14,10,6,2],
+    [47,43,39,35,15,11,7,3],
+    [60,56,52,48,28,24,20,16],
+    [61,57,53,49,29,25,21,17]
+  ];
+  var root_notes = [
+    [24,30,36,42,48,54,60,66],
+    [25,31,37,43,49,55,61,67],
+    [26,32,38,44,50,56,62,68],
+    [27,33,39,45,51,57,63,69],
+    [28,34,40,46,52,58,64,70],
+    [29,35,41,47,53,59,65,71]
+  ];
+
+  for(var i = 0; i < root_notes.length; i++) {
+    for(var j = 0; j < root_notes[i].length; j++) {
+      if(root_notes[i][j] == note) {
+        return track_ccs[i][j];
+      }
+    }
+  }
+  return 0;
+}
+
+function chord_prog_to_mr_cc(chord_prog) {
+
+  var track_ccs = [
+    [44,40,36,32,12,8,4,0],
+    [45,41,37,33,13,9,5,1],
+    [46,42,38,34,14,10,6,2],
+    [47,43,39,35,15,11,7,3],
+    [60,56,52,48,28,24,20,16],
+    [61,57,53,49,29,25,21,17]
+  ];
+  var chord_progs = [
+    [42,36,30,24,18,12,6,0],
+    [43,37,31,25,19,13,7,1],
+    [44,38,32,26,20,14,8,2],
+    [45,39,33,27,21,15,9,3],
+    [46,40,34,28,22,16,10,4],
+    [47,41,35,29,23,17,11,5]
+  ];
+
+  for(var i = 0; i < chord_progs.length; i++) {
+    for(var j = 0; j < chord_progs[i].length; j++) {
+      if(chord_progs[i][j] == chord_prog) {
+        return track_ccs[i][j];
+      }
+    }
+  }
   return 0;
 }

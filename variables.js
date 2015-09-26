@@ -155,7 +155,20 @@ for(var i = 0; i < 6; i++) {
   var m_cc = velocity_track_to_mr_cc(i + 1, pdata.track_velocity[i]);
   mr_set_velocity(m_cc);
 }
-
+// Init pattern screen
+for(var i = 0; i < 6; i++) {
+  var m_cc = pattern_track_to_mr_cc(i + 1, pdata.track_pattern[i]);
+  mr_set_pattern(m_cc);
+}
+// Init note/random screen
+for(var i = 0; i < 6; i++) {
+  var m_cc = note_ran_track_to_mr_cc(i + 1, pdata.track_note_ran[i]);
+  mr_set_note_ran(m_cc);
+}
+// Init root note screen
+mr_set_root_note(root_note_to_mr_cc(pdata.root_note));
+// Init chord prog screen
+mr_set_chord_prog(chord_prog_to_mr_cc(pdata.chord_prog));
 
 // Patterns
 var p_t1_bd = [
