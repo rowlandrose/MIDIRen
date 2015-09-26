@@ -1,3 +1,111 @@
+// MIDIRen Screens
+/*var mrs_1 = [
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0]
+];
+var mrs_2 = [
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0]
+];
+var mrs_3 = [
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0]
+];
+var mrs_4 = [
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0]
+];
+var mrs_5 = [
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0]
+];
+var mrs_6 = [
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0]
+];
+var mrs_7 = [
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0]
+];
+var mrs_8 = [
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0],
+  [0,0,0,0,0,0]
+];
+
+var mrs = [mrs_1,mrs_2,mrs_3,mrs_4,mrs_5,mrs_6,mrs_7,mrs_8];*/
+var mrs = [];
+for(var i = 0; i < 8; i++) {
+
+  mrs[i] = [];
+  for(var j = 0; j < 64; j++) {
+    mrs[i][j] = 0;
+  }
+}
+
+var mr_velocity_sn = 0;
+var mr_pattern_sn = 1;
+var mr_note_ran_sn = 2;
+var mr_root_note_sn = 3;
+var mr_chord_prog_sn = 4;
+var mr_bpm_sn = 5;
+var mr_preset_sn = 6;
+var mr_drum_pad_sn = 7;
+
+var track_velocity = [127,127,127,127,127,127];
+var track_pattern = [0,0,0,0,0,0];
+var track_note_ran = [0,0,0,0,0,0];
+
+var mr_current_sn = 0;
+var mr_current_msec = 0;
+
 // Patterns
 var p_t1_bd = [
   'x---x---x---x---',
@@ -229,10 +337,12 @@ var prev_t5_p = 0;
 var prev_t6_p = 0;
 
 // Constants
-var MIDI_IO_PORT = 1; // midi port UX16 happens to be on
+var UX16_MIDI_IO_PORT = 1; // midi port UX16 happens to be on
+var MIDIREN_MIDI_IO_PORT = 2; // midi port MIDIRen happens to be on
+var MIDIREN_CHANNEL = 16;
 var BEATS_PER_MEASURE = 4;
 var BPM = 120;
-var EXT_BPM = true;
+var EXT_BPM = false;
 var PPQ = 4; // Pulse Per Quarter-note (beat), 4 = sixteenth notes
 var CLOCK_PPQ = 24; // PPQ of incoming MIDI timing clock messages
 var CLOCK_PER_CLICK = Math.floor(CLOCK_PPQ / PPQ);
@@ -247,7 +357,7 @@ var midiren_play = false;
 var current_clock = CLOCK_PER_CLICK;
 var current_pulse = 0;
 var root_note = 48;
-var current_chord_progression = 1; // 0 to 15
+var current_chord_progression = 1; // 0 to 47
 var prog_spot = 0;
 var current_chord = chord_progressions[current_chord_progression][prog_spot];
 var current_root = root_note + chord_positions[current_chord];

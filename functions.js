@@ -191,3 +191,628 @@ function midi_panic() {
   midi_output.sendMessage([139, 0, 30]);
   midi_output.sendMessage([140, 0, 30]);
 }
+
+// MIDIRen set functions
+// Sets variable and changes LEDs on MIDIRen if neccessary
+function mr_set_velocity(mr_cc) {
+
+  var track_num = 1;
+  var rows_tall = 1;
+  var velocity = 0;
+  var on_ccs = [];
+  var off_ccs = [];
+  switch(mr_cc) {
+
+    // Track 1
+    case 44:
+      track_num = 1;
+      velocity = 0;
+      on_ccs.push(44);
+      off_ccs.push(40);
+      off_ccs.push(36);
+      off_ccs.push(32);
+      off_ccs.push(12);
+      off_ccs.push(8);
+      off_ccs.push(4);
+      off_ccs.push(0);
+      break;
+    case 40:
+      track_num = 1;
+      velocity = 44;
+      on_ccs.push(44);
+      on_ccs.push(40);
+      off_ccs.push(36);
+      off_ccs.push(32);
+      off_ccs.push(12);
+      off_ccs.push(8);
+      off_ccs.push(4);
+      off_ccs.push(0);
+      break;
+    case 36:
+      track_num = 1;
+      velocity = 57;
+      on_ccs.push(44);
+      on_ccs.push(40);
+      on_ccs.push(36);
+      off_ccs.push(32);
+      off_ccs.push(12);
+      off_ccs.push(8);
+      off_ccs.push(4);
+      off_ccs.push(0);
+      break;
+    case 32:
+      track_num = 1;
+      velocity = 71;
+      on_ccs.push(44);
+      on_ccs.push(40);
+      on_ccs.push(36);
+      on_ccs.push(32);
+      off_ccs.push(12);
+      off_ccs.push(8);
+      off_ccs.push(4);
+      off_ccs.push(0);
+      break;
+    case 12:
+      track_num = 1;
+      velocity = 85;
+      on_ccs.push(44);
+      on_ccs.push(40);
+      on_ccs.push(36);
+      on_ccs.push(32);
+      on_ccs.push(12);
+      off_ccs.push(8);
+      off_ccs.push(4);
+      off_ccs.push(0);
+      break;
+    case 8:
+      track_num = 1;
+      velocity = 99;
+      on_ccs.push(44);
+      on_ccs.push(40);
+      on_ccs.push(36);
+      on_ccs.push(32);
+      on_ccs.push(12);
+      on_ccs.push(8);
+      off_ccs.push(4);
+      off_ccs.push(0);
+      break;
+    case 4:
+      track_num = 1;
+      velocity = 113;
+      on_ccs.push(44);
+      on_ccs.push(40);
+      on_ccs.push(36);
+      on_ccs.push(32);
+      on_ccs.push(12);
+      on_ccs.push(8);
+      on_ccs.push(4);
+      off_ccs.push(0);
+      break;
+    case 0:
+      track_num = 1;
+      velocity = 127;
+      on_ccs.push(44);
+      on_ccs.push(40);
+      on_ccs.push(36);
+      on_ccs.push(32);
+      on_ccs.push(12);
+      on_ccs.push(8);
+      on_ccs.push(4);
+      on_ccs.push(0);
+      break;
+
+    // Track 2
+    case 45:
+      track_num = 2;
+      velocity = 0;
+      on_ccs.push(45);
+      off_ccs.push(41);
+      off_ccs.push(37);
+      off_ccs.push(33);
+      off_ccs.push(13);
+      off_ccs.push(9);
+      off_ccs.push(5);
+      off_ccs.push(1);
+      break;
+    case 41:
+      track_num = 2;
+      velocity = 44;
+      on_ccs.push(45);
+      on_ccs.push(41);
+      off_ccs.push(37);
+      off_ccs.push(33);
+      off_ccs.push(13);
+      off_ccs.push(9);
+      off_ccs.push(5);
+      off_ccs.push(1);
+      break;
+    case 37:
+      track_num = 2;
+      velocity = 57;
+      on_ccs.push(45);
+      on_ccs.push(41);
+      on_ccs.push(37);
+      off_ccs.push(33);
+      off_ccs.push(13);
+      off_ccs.push(9);
+      off_ccs.push(5);
+      off_ccs.push(1);
+      break;
+    case 33:
+      track_num = 2;
+      velocity = 71;
+      on_ccs.push(45);
+      on_ccs.push(41);
+      on_ccs.push(37);
+      on_ccs.push(33);
+      off_ccs.push(13);
+      off_ccs.push(9);
+      off_ccs.push(5);
+      off_ccs.push(1);
+      break;
+    case 13:
+      track_num = 2;
+      velocity = 85;
+      on_ccs.push(45);
+      on_ccs.push(41);
+      on_ccs.push(37);
+      on_ccs.push(33);
+      on_ccs.push(13);
+      off_ccs.push(9);
+      off_ccs.push(5);
+      off_ccs.push(1);
+      break;
+    case 9:
+      track_num = 2;
+      velocity = 99;
+      on_ccs.push(45);
+      on_ccs.push(41);
+      on_ccs.push(37);
+      on_ccs.push(33);
+      on_ccs.push(13);
+      on_ccs.push(9);
+      off_ccs.push(5);
+      off_ccs.push(1);
+      break;
+    case 5:
+      track_num = 2;
+      velocity = 113;
+      on_ccs.push(45);
+      on_ccs.push(41);
+      on_ccs.push(37);
+      on_ccs.push(33);
+      on_ccs.push(13);
+      on_ccs.push(9);
+      on_ccs.push(5);
+      off_ccs.push(1);
+      break;
+    case 1:
+      track_num = 2;
+      velocity = 127;
+      on_ccs.push(45);
+      on_ccs.push(41);
+      on_ccs.push(37);
+      on_ccs.push(33);
+      on_ccs.push(13);
+      on_ccs.push(9);
+      on_ccs.push(5);
+      on_ccs.push(1);
+      break;
+
+    // Track 3
+    case 46:
+      track_num = 3;
+      velocity = 0;
+      on_ccs.push(46);
+      off_ccs.push(42);
+      off_ccs.push(38);
+      off_ccs.push(34);
+      off_ccs.push(14);
+      off_ccs.push(10);
+      off_ccs.push(6);
+      off_ccs.push(2);
+      break;
+    case 42:
+      track_num = 3;
+      velocity = 44;
+      on_ccs.push(46);
+      on_ccs.push(42);
+      off_ccs.push(38);
+      off_ccs.push(34);
+      off_ccs.push(14);
+      off_ccs.push(10);
+      off_ccs.push(6);
+      off_ccs.push(2);
+      break;
+    case 38:
+      track_num = 3;
+      velocity = 57;
+      on_ccs.push(46);
+      on_ccs.push(42);
+      on_ccs.push(38);
+      off_ccs.push(34);
+      off_ccs.push(14);
+      off_ccs.push(10);
+      off_ccs.push(6);
+      off_ccs.push(2);
+      break;
+    case 34:
+      track_num = 3;
+      velocity = 71;
+      on_ccs.push(46);
+      on_ccs.push(42);
+      on_ccs.push(38);
+      on_ccs.push(34);
+      off_ccs.push(14);
+      off_ccs.push(10);
+      off_ccs.push(6);
+      off_ccs.push(2);
+      break;
+    case 14:
+      track_num = 3;
+      velocity = 85;
+      on_ccs.push(46);
+      on_ccs.push(42);
+      on_ccs.push(38);
+      on_ccs.push(34);
+      on_ccs.push(14);
+      off_ccs.push(10);
+      off_ccs.push(6);
+      off_ccs.push(2);
+      break;
+    case 10:
+      track_num = 3;
+      velocity = 99;
+      on_ccs.push(46);
+      on_ccs.push(42);
+      on_ccs.push(38);
+      on_ccs.push(34);
+      on_ccs.push(14);
+      on_ccs.push(10);
+      off_ccs.push(6);
+      off_ccs.push(2);
+      break;
+    case 6:
+      track_num = 3;
+      velocity = 113;
+      on_ccs.push(46);
+      on_ccs.push(42);
+      on_ccs.push(38);
+      on_ccs.push(34);
+      on_ccs.push(14);
+      on_ccs.push(10);
+      on_ccs.push(6);
+      off_ccs.push(2);
+      break;
+    case 2:
+      track_num = 3;
+      velocity = 127;
+      on_ccs.push(46);
+      on_ccs.push(42);
+      on_ccs.push(38);
+      on_ccs.push(34);
+      on_ccs.push(14);
+      on_ccs.push(10);
+      on_ccs.push(6);
+      on_ccs.push(2);
+      break;
+
+    // Track 4
+    case 47:
+      track_num = 4;
+      velocity = 0;
+      on_ccs.push(47);
+      off_ccs.push(43);
+      off_ccs.push(39);
+      off_ccs.push(35);
+      off_ccs.push(15);
+      off_ccs.push(11);
+      off_ccs.push(7);
+      off_ccs.push(3);
+      break;
+    case 43:
+      track_num = 4;
+      velocity = 44;
+      on_ccs.push(47);
+      on_ccs.push(43);
+      off_ccs.push(39);
+      off_ccs.push(35);
+      off_ccs.push(15);
+      off_ccs.push(11);
+      off_ccs.push(7);
+      off_ccs.push(3);
+      break;
+    case 39:
+      track_num = 4;
+      velocity = 57;
+      on_ccs.push(47);
+      on_ccs.push(43);
+      on_ccs.push(39);
+      off_ccs.push(35);
+      off_ccs.push(15);
+      off_ccs.push(11);
+      off_ccs.push(7);
+      off_ccs.push(3);
+      break;
+    case 35:
+      track_num = 4;
+      velocity = 71;
+      on_ccs.push(47);
+      on_ccs.push(43);
+      on_ccs.push(39);
+      on_ccs.push(35);
+      off_ccs.push(15);
+      off_ccs.push(11);
+      off_ccs.push(7);
+      off_ccs.push(3);
+      break;
+    case 15:
+      track_num = 4;
+      velocity = 85;
+      on_ccs.push(47);
+      on_ccs.push(43);
+      on_ccs.push(39);
+      on_ccs.push(35);
+      on_ccs.push(15);
+      off_ccs.push(11);
+      off_ccs.push(7);
+      off_ccs.push(3);
+      break;
+    case 11:
+      track_num = 4;
+      velocity = 99;
+      on_ccs.push(47);
+      on_ccs.push(43);
+      on_ccs.push(39);
+      on_ccs.push(35);
+      on_ccs.push(15);
+      on_ccs.push(11);
+      off_ccs.push(7);
+      off_ccs.push(3);
+      break;
+    case 7:
+      track_num = 4;
+      velocity = 113;
+      on_ccs.push(47);
+      on_ccs.push(43);
+      on_ccs.push(39);
+      on_ccs.push(35);
+      on_ccs.push(15);
+      on_ccs.push(11);
+      on_ccs.push(7);
+      off_ccs.push(3);
+      break;
+    case 3:
+      track_num = 4;
+      velocity = 127;
+      on_ccs.push(47);
+      on_ccs.push(43);
+      on_ccs.push(39);
+      on_ccs.push(35);
+      on_ccs.push(15);
+      on_ccs.push(11);
+      on_ccs.push(7);
+      on_ccs.push(3);
+      break;
+
+    // Track 5
+    case 60:
+      track_num = 5;
+      velocity = 0;
+      on_ccs.push(60);
+      off_ccs.push(56);
+      off_ccs.push(52);
+      off_ccs.push(48);
+      off_ccs.push(28);
+      off_ccs.push(24);
+      off_ccs.push(20);
+      off_ccs.push(16);
+      break;
+    case 56:
+      track_num = 5;
+      velocity = 44;
+      on_ccs.push(60);
+      on_ccs.push(56);
+      off_ccs.push(52);
+      off_ccs.push(48);
+      off_ccs.push(28);
+      off_ccs.push(24);
+      off_ccs.push(20);
+      off_ccs.push(16);
+      break;
+    case 52:
+      track_num = 5;
+      velocity = 57;
+      on_ccs.push(60);
+      on_ccs.push(56);
+      on_ccs.push(52);
+      off_ccs.push(48);
+      off_ccs.push(28);
+      off_ccs.push(24);
+      off_ccs.push(20);
+      off_ccs.push(16);
+      break;
+    case 48:
+      track_num = 5;
+      velocity = 71;
+      on_ccs.push(60);
+      on_ccs.push(56);
+      on_ccs.push(52);
+      on_ccs.push(48);
+      off_ccs.push(28);
+      off_ccs.push(24);
+      off_ccs.push(20);
+      off_ccs.push(16);
+      break;
+    case 28:
+      track_num = 5;
+      velocity = 85;
+      on_ccs.push(60);
+      on_ccs.push(56);
+      on_ccs.push(52);
+      on_ccs.push(48);
+      on_ccs.push(28);
+      off_ccs.push(24);
+      off_ccs.push(20);
+      off_ccs.push(16);
+      break;
+    case 24:
+      track_num = 5;
+      velocity = 99;
+      on_ccs.push(60);
+      on_ccs.push(56);
+      on_ccs.push(52);
+      on_ccs.push(48);
+      on_ccs.push(28);
+      on_ccs.push(24);
+      off_ccs.push(20);
+      off_ccs.push(16);
+      break;
+    case 20:
+      track_num = 5;
+      velocity = 113;
+      on_ccs.push(60);
+      on_ccs.push(56);
+      on_ccs.push(52);
+      on_ccs.push(48);
+      on_ccs.push(28);
+      on_ccs.push(24);
+      on_ccs.push(20);
+      off_ccs.push(16);
+      break;
+    case 16:
+      track_num = 5;
+      velocity = 127;
+      on_ccs.push(60);
+      on_ccs.push(56);
+      on_ccs.push(52);
+      on_ccs.push(48);
+      on_ccs.push(28);
+      on_ccs.push(24);
+      on_ccs.push(20);
+      on_ccs.push(16);
+      break;
+
+    // Track 6
+    case 61:
+      track_num = 6;
+      velocity = 0;
+      on_ccs.push(61);
+      off_ccs.push(57);
+      off_ccs.push(53);
+      off_ccs.push(49);
+      off_ccs.push(29);
+      off_ccs.push(25);
+      off_ccs.push(21);
+      off_ccs.push(17);
+      break;
+    case 57:
+      track_num = 6;
+      velocity = 44;
+      on_ccs.push(61);
+      on_ccs.push(57);
+      off_ccs.push(53);
+      off_ccs.push(49);
+      off_ccs.push(29);
+      off_ccs.push(25);
+      off_ccs.push(21);
+      off_ccs.push(17);
+      break;
+    case 53:
+      track_num = 6;
+      velocity = 57;
+      on_ccs.push(61);
+      on_ccs.push(57);
+      on_ccs.push(53);
+      off_ccs.push(49);
+      off_ccs.push(29);
+      off_ccs.push(25);
+      off_ccs.push(21);
+      off_ccs.push(17);
+      break;
+    case 49:
+      track_num = 6;
+      velocity = 71;
+      on_ccs.push(61);
+      on_ccs.push(57);
+      on_ccs.push(53);
+      on_ccs.push(49);
+      off_ccs.push(29);
+      off_ccs.push(25);
+      off_ccs.push(21);
+      off_ccs.push(17);
+      break;
+    case 29:
+      track_num = 6;
+      velocity = 85;
+      on_ccs.push(61);
+      on_ccs.push(57);
+      on_ccs.push(53);
+      on_ccs.push(49);
+      on_ccs.push(29);
+      off_ccs.push(25);
+      off_ccs.push(21);
+      off_ccs.push(17);
+      break;
+    case 25:
+      track_num = 6;
+      velocity = 99;
+      on_ccs.push(61);
+      on_ccs.push(57);
+      on_ccs.push(53);
+      on_ccs.push(49);
+      on_ccs.push(29);
+      on_ccs.push(25);
+      off_ccs.push(21);
+      off_ccs.push(17);
+      break;
+    case 21:
+      track_num = 6;
+      velocity = 113;
+      on_ccs.push(61);
+      on_ccs.push(57);
+      on_ccs.push(53);
+      on_ccs.push(49);
+      on_ccs.push(29);
+      on_ccs.push(25);
+      on_ccs.push(21);
+      off_ccs.push(17);
+      break;
+    case 17:
+      track_num = 6;
+      velocity = 127;
+      on_ccs.push(61);
+      on_ccs.push(57);
+      on_ccs.push(53);
+      on_ccs.push(49);
+      on_ccs.push(29);
+      on_ccs.push(25);
+      on_ccs.push(21);
+      on_ccs.push(17);
+      break;
+
+    default:
+      // no change
+  }
+  track_velocity[track_num] = velocity; // set new velocity
+
+  // Build velocity screen
+  for(var i = 0; i < on_ccs.length; i++) {
+    mrs[mr_velocity_sn][on_ccs[i]] = 127;
+  }
+  for(var i = 0; i < off_ccs.length; i++) {
+    mrs[mr_velocity_sn][off_ccs[i]] = 0;
+  }
+
+  if(mr_velocity_sn == mr_current_sn) {
+    mr_screen_refresh();
+  }
+}
+
+function mr_screen_refresh() {
+  // Loop through mrs[mr_current_sn] and send midi cc data to MIDIRen
+  for(var i = 0; i < mrs[mr_current_sn].length; i++) {
+
+    midiren_output.sendMessage([175 + MIDIREN_CH, i, mrs[mr_current_sn][i]]);
+  }
+}

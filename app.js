@@ -6,9 +6,25 @@ eval(fs.readFileSync('./variables.js').toString());
 eval(fs.readFileSync('./functions.js').toString());
 
 var midi_output = new midi.output();
-midi_output.openPort(MIDI_IO_PORT);
+midi_output.openPort(UX16_MIDI_IO_PORT);
 
 var midi_input = new midi.input();
+
+var input_port_count = midi_input.getPortCount();
+for(var i = 0; i < input_port_count; i++) {
+
+  console.log(i+': '+midi_input.getPortName(i));
+}
+
+var midiren_output = new midi.output();
+midiren_output.openPort(MIDIREN_MIDI_IO_PORT);
+
+var midiren_input = new midi.input();
+midiren_input.on('message', function(deltaTime, message) {
+
+  console.log(message);
+});
+midiren_input.openPort(MIDIREN_MIDI_IO_PORT);
 
 midi_input.on('message', function(deltaTime, message) {
 
@@ -190,7 +206,7 @@ midi_input.on('message', function(deltaTime, message) {
   }
 });
 
-midi_input.openPort(MIDI_IO_PORT);
+midi_input.openPort(UX16_MIDI_IO_PORT);
 midi_input.ignoreTypes(true, false, true);
 
 // Close the port when done.
