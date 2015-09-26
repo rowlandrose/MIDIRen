@@ -1,3 +1,7 @@
+function clone(a) {
+   return JSON.parse(JSON.stringify(a));
+}
+
 function run_output_timeout() {
 
   midi_output_timeout = setTimeout(function() {
@@ -794,7 +798,7 @@ function mr_set_velocity(mr_cc) {
     default:
       // no change
   }
-  track_velocity[track_num] = velocity; // set new velocity
+  data.track_velocity[track_num] = velocity; // set new velocity
 
   // Build velocity screen
   for(var i = 0; i < on_ccs.length; i++) {
@@ -815,4 +819,107 @@ function mr_screen_refresh() {
 
     midiren_output.sendMessage([175 + MIDIREN_CH, i, mrs[mr_current_sn][i]]);
   }
+}
+
+function velocity_track_to_mr_cc(track_num, velocity) {
+
+  if(track_num == 1 && velocity == 127) {
+    return 0;
+  } else if(track_num == 1 && velocity == 113) {
+    return 4;
+  } else if(track_num == 1 && velocity == 99) {
+    return 8;
+  } else if(track_num == 1 && velocity == 85) {
+    return 12;
+  } else if(track_num == 1 && velocity == 71) {
+    return 32;
+  } else if(track_num == 1 && velocity == 57) {
+    return 36;
+  } else if(track_num == 1 && velocity == 44) {
+    return 40;
+  } else if(track_num == 1 && velocity == 0) {
+    return 44;
+  } else if(track_num == 2 && velocity == 127) {
+    return 1;
+  } else if(track_num == 2 && velocity == 113) {
+    return 5;
+  } else if(track_num == 2 && velocity == 99) {
+    return 9;
+  } else if(track_num == 2 && velocity == 85) {
+    return 13;
+  } else if(track_num == 2 && velocity == 71) {
+    return 33;
+  } else if(track_num == 2 && velocity == 57) {
+    return 37;
+  } else if(track_num == 2 && velocity == 44) {
+    return 41;
+  } else if(track_num == 2 && velocity == 0) {
+    return 45;
+  } else if(track_num == 3 && velocity == 127) {
+    return 2;
+  } else if(track_num == 3 && velocity == 113) {
+    return 6;
+  } else if(track_num == 3 && velocity == 99) {
+    return 10;
+  } else if(track_num == 3 && velocity == 85) {
+    return 14;
+  } else if(track_num == 3 && velocity == 71) {
+    return 34;
+  } else if(track_num == 3 && velocity == 57) {
+    return 38;
+  } else if(track_num == 3 && velocity == 44) {
+    return 42;
+  } else if(track_num == 3 && velocity == 0) {
+    return 46;
+  } else if(track_num == 4 && velocity == 127) {
+    return 3;
+  } else if(track_num == 4 && velocity == 113) {
+    return 7;
+  } else if(track_num == 4 && velocity == 99) {
+    return 11;
+  } else if(track_num == 4 && velocity == 85) {
+    return 15;
+  } else if(track_num == 4 && velocity == 71) {
+    return 35;
+  } else if(track_num == 4 && velocity == 57) {
+    return 39;
+  } else if(track_num == 4 && velocity == 44) {
+    return 43;
+  } else if(track_num == 4 && velocity == 0) {
+    return 47;
+  } else if(track_num == 5 && velocity == 127) {
+    return 16;
+  } else if(track_num == 5 && velocity == 113) {
+    return 20;
+  } else if(track_num == 5 && velocity == 99) {
+    return 24;
+  } else if(track_num == 5 && velocity == 85) {
+    return 28;
+  } else if(track_num == 5 && velocity == 71) {
+    return 48;
+  } else if(track_num == 5 && velocity == 57) {
+    return 52;
+  } else if(track_num == 5 && velocity == 44) {
+    return 56;
+  } else if(track_num == 5 && velocity == 0) {
+    return 60;
+  } else if(track_num == 6 && velocity == 127) {
+    return 17;
+  } else if(track_num == 6 && velocity == 113) {
+    return 21;
+  } else if(track_num == 6 && velocity == 99) {
+    return 25;
+  } else if(track_num == 6 && velocity == 85) {
+    return 29;
+  } else if(track_num == 6 && velocity == 71) {
+    return 49;
+  } else if(track_num == 6 && velocity == 57) {
+    return 53;
+  } else if(track_num == 6 && velocity == 44) {
+    return 57;
+  } else if(track_num == 6 && velocity == 0) {
+    return 61;
+  }
+
+  return 0;
 }
