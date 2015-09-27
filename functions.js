@@ -199,6 +199,56 @@ function midi_panic() {
 // MIDIRen set functions
 // Sets variable and changes LEDs on MIDIRen if neccessary
 
+function mr_set_bpm(mr_cc) {
+
+  var digit_1 = [0,1,2,3,16,17,4,5,6,7];
+  var digit_2 = [8,9,10,11,24,25,12,13,14,15];
+  var digit_3 = [32,33,34,35,48,49,36,37,38,39];
+
+  if(mr_cc == 44) {
+    midiren_play = true;
+    // Also set screen to this on and 45 off
+  } else if(mr_cc == 45) {
+    midiren_play = false;
+    // Also set screen to this on and 44 off
+  } else if(mr_cc == 46) {
+
+    ext_bpm = false;
+    // Also set screen to this on and 47 off
+  } else if(mr_cc == 47) {
+
+    ext_bpm = true;
+    // Also set screen to this on and 46 off
+  } else if(mr_cc == 60) {
+    // Reset to original preset bpm
+    pdata.bpm = presets[selected_preset].bpm;
+    // refresh screen
+  } else if(mr_cc == 61) {
+    // tap tempo
+    // have another process make this blink with the tempo
+    // this does an average of the last four taps, min bmp 30
+    // reset to wait for tap 1 after 5 sec of no taps
+  } else if(digit_1.indexOf(mr_cc) != -1) {
+
+    var temp_bpm = pdata.bpm % 100;
+    pdata.bpm = temp_bpm + (100 * digit_1.indexOf(mr_cc));
+    // Also set this cc to on and rest of digit_1 to off
+
+  } else if(digit_2.indexOf(mr_cc) != -1) {
+
+    var temp_bpm_h = Math.floor(pdata.bpm / 100) * 100;
+    var temp_bpm_ones = pdata.bpm % 10;
+    pdata.bpm = temp_bpm_h + (10 * digit_2.indexOf(mr_cc)) + temp_bpm_ones;
+    // Also set this cc to on and rest of digit_2 to off
+
+  } else if(digit_3.indexOf(mr_cc) != -1) {
+
+    var temp_bpm = Math.floor(pdata.bpm / 10) * 10;
+    pdata.bpm = temp_bpm + digit_3.indexOf(mr_cc);
+    // Also set this cc to on and rest of digit_3 to off
+  }
+}
+
 function mr_set_chord_prog(mr_cc) {
 
   var track_ccs = [

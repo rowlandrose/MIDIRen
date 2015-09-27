@@ -406,7 +406,6 @@ var MIDIREN_MIDI_IO_PORT = 2; // midi port MIDIRen happens to be on
 var MIDIREN_CHANNEL = 16;
 var BEATS_PER_MEASURE = 4;
 var BPM = 120;
-var EXT_BPM = false;
 var PPQ = 4; // Pulse Per Quarter-note (beat), 4 = sixteenth notes
 var CLOCK_PPQ = 24; // PPQ of incoming MIDI timing clock messages
 var CLOCK_PER_CLICK = Math.floor(CLOCK_PPQ / PPQ);
@@ -418,6 +417,7 @@ var midi = require('midi'); // Include midi library
 
 var midiren_play = false;
 
+var ext_bpm = false;
 var current_clock = CLOCK_PER_CLICK;
 var current_pulse = 0;
 var root_note = 48;

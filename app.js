@@ -191,7 +191,7 @@ midi_input.on('message', function(deltaTime, message) {
   }
 
   // Sync to external BPM
-  if(EXT_BPM && message[0] == 248) {
+  if(ext_bpm && message[0] == 248) {
 
     if(current_clock == CLOCK_PER_CLICK) {
 
@@ -216,7 +216,7 @@ var time = process.hrtime();
 var midi_output_timeout;
 var prev_tick = MS_PER_TICK;
 
-if(!EXT_BPM) {
+if(!ext_bpm) {
   run_output_timeout(0);
 }
 
