@@ -214,7 +214,7 @@ midi_input.ignoreTypes(true, false, true);
 
 var time = process.hrtime();
 var midi_output_timeout;
-var prev_tick = MS_PER_TICK;
+var prev_tick = ms_per_tick();
 
 if(!ext_bpm) {
   run_output_timeout(0);

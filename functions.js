@@ -2,6 +2,45 @@ function clone(a) {
    return JSON.parse(JSON.stringify(a));
 }
 
+function tap_bpm() {
+  // have another process make this blink with the tempo
+  // Does a running average of the last four taps, min bpm 30
+  // reset to wait for tap 1 after 2 sec of no taps
+  var this_time = process.hrtime();
+  if(bpm_tap_prev_time > 0) {
+
+    var diff = process.hrtime(this_time);
+
+    if( diff[1] <  2000000000) { // 2 seconds
+
+      if(bpm_tap_arr.length == 4) {
+        bpm_tap_arr.shift();
+      }
+
+      bpm_tap_arr.push( 60 / (diff[1] / 1000000000) );
+
+      if(bpm_tap_arr.length == 4) {
+
+        var sum = bpm_tap_arr[0] + bpm_tap_arr[1] + bpm_tap_arr[2] + bpm_tap_arr[3];
+        pdata.bpm = sum / 4;
+      }
+
+    } else {
+      bpm_tap_arr = [];
+      this_time = 0;
+    }
+  }
+  bpm_tap_prev_time = this_time;
+}
+
+function ms_per_tick() {
+  return 1000 / (pdata.bpm / 60) / PPQ;
+}
+
+function ns_per_tick() {
+  return ms_per_tick() * 1000000;
+}
+
 function run_output_timeout() {
 
   midi_output_timeout = setTimeout(function() {
@@ -16,7 +55,7 @@ function run_output_timeout() {
     // Offset detected as difference in time vs expected time
     var diff = process.hrtime(time);
     time = process.hrtime();
-    prev_tick = prev_tick - ((diff[1] - NS_PER_TICK) / 1000000);
+    prev_tick = prev_tick - ((diff[1] - ns_per_tick()) / 1000000);
     run_output_timeout();
 
   }, prev_tick);
@@ -205,47 +244,98 @@ function mr_set_bpm(mr_cc) {
   var digit_2 = [8,9,10,11,24,25,12,13,14,15];
   var digit_3 = [32,33,34,35,48,49,36,37,38,39];
 
-  if(mr_cc == 44) {
+  if(mr_cc == 40) {
+    pdata.bpm -= 10;
+  } else if(mr_cc == 41) {
+    pdata.bpm -= 5;
+  } else if(mr_cc == 42) {
+    pdata.bpm -= 1;
+  } else if(mr_cc == 43) {
+    pdata.bpm += 1;
+  } else if(mr_cc == 56) {
+    pdata.bpm += 5;
+  } else if(mr_cc == 57) {
+    pdata.bpm += 10;
+  } else if(mr_cc == 44) {
     midiren_play = true;
-    // Also set screen to this on and 45 off
   } else if(mr_cc == 45) {
     midiren_play = false;
-    // Also set screen to this on and 44 off
   } else if(mr_cc == 46) {
-
-    ext_bpm = false;
-    // Also set screen to this on and 47 off
-  } else if(mr_cc == 47) {
-
     ext_bpm = true;
-    // Also set screen to this on and 46 off
+    clearTimeout(midi_output_timeout);
+  } else if(mr_cc == 47) {
+    ext_bpm = false;
+    run_output_timeout(0);
   } else if(mr_cc == 60) {
-    // Reset to original preset bpm
     pdata.bpm = presets[selected_preset].bpm;
-    // refresh screen
   } else if(mr_cc == 61) {
-    // tap tempo
-    // have another process make this blink with the tempo
-    // this does an average of the last four taps, min bmp 30
-    // reset to wait for tap 1 after 5 sec of no taps
+    tap_bpm();
   } else if(digit_1.indexOf(mr_cc) != -1) {
 
     var temp_bpm = pdata.bpm % 100;
     pdata.bpm = temp_bpm + (100 * digit_1.indexOf(mr_cc));
-    // Also set this cc to on and rest of digit_1 to off
 
   } else if(digit_2.indexOf(mr_cc) != -1) {
 
     var temp_bpm_h = Math.floor(pdata.bpm / 100) * 100;
     var temp_bpm_ones = pdata.bpm % 10;
     pdata.bpm = temp_bpm_h + (10 * digit_2.indexOf(mr_cc)) + temp_bpm_ones;
-    // Also set this cc to on and rest of digit_2 to off
 
   } else if(digit_3.indexOf(mr_cc) != -1) {
 
     var temp_bpm = Math.floor(pdata.bpm / 10) * 10;
     pdata.bpm = temp_bpm + digit_3.indexOf(mr_cc);
-    // Also set this cc to on and rest of digit_3 to off
+  }
+
+  // Update bpm screen
+  for(var i = 0; i < digit_1.length; i++) {
+
+    var temp_bpm_h = Math.floor(pdata.bpm / 100);
+
+    if(temp_bpm_h == i) {
+      mrs[mr_bmp_sn][digit_1[i]] = 127;
+    } else {
+      mrs[mr_bmp_sn][digit_1[i]] = 0;
+    }
+  }
+  for(var i = 0; i < digit_2.length; i++) {
+
+    var temp_bpm = pdata.bpm % 100;
+    temp_bpm = Math.floor(temp_bpm / 10);
+
+    if(temp_bpm == i) {
+      mrs[mr_bmp_sn][digit_2[i]] = 127;
+    } else {
+      mrs[mr_bmp_sn][digit_2[i]] = 0;
+    }
+  }
+  for(var i = 0; i < digit_3.length; i++) {
+
+    var temp_bpm = pdata.bpm % 10;
+
+    if(temp_bpm == i) {
+      mrs[mr_bmp_sn][digit_3[i]] = 127;
+    } else {
+      mrs[mr_bmp_sn][digit_3[i]] = 0;
+    }
+  }
+  if(midiren_play) {
+    mrs[mr_bmp_sn][44] = 127;
+    mrs[mr_bmp_sn][45] = 0;
+  } else {
+    mrs[mr_bmp_sn][44] = 0;
+    mrs[mr_bmp_sn][45] = 127;
+  }
+  if(ext_bpm) {
+    mrs[mr_bmp_sn][46] = 127;
+    mrs[mr_bmp_sn][47] = 0;
+  } else {
+    mrs[mr_bmp_sn][46] = 0;
+    mrs[mr_bmp_sn][47] = 127;
+  }
+
+  if(mr_bmp_sn == mr_current_sn) {
+    mr_screen_refresh();
   }
 }
 

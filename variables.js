@@ -405,13 +405,13 @@ var UX16_MIDI_IO_PORT = 1; // midi port UX16 happens to be on
 var MIDIREN_MIDI_IO_PORT = 2; // midi port MIDIRen happens to be on
 var MIDIREN_CHANNEL = 16;
 var BEATS_PER_MEASURE = 4;
-var BPM = 120;
 var PPQ = 4; // Pulse Per Quarter-note (beat), 4 = sixteenth notes
 var CLOCK_PPQ = 24; // PPQ of incoming MIDI timing clock messages
 var CLOCK_PER_CLICK = Math.floor(CLOCK_PPQ / PPQ);
-var MS_PER_TICK = 1000 / (BPM / 60) / PPQ;
-var NS_PER_TICK = MS_PER_TICK * 1000000;
 var NOTE_OFFSET = -12; // Notes away from chosen root note
+
+var bpm_tap_arr = [];
+var bpm_tap_prev_time = 0;
 
 var midi = require('midi'); // Include midi library
 
