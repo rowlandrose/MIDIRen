@@ -21,7 +21,8 @@ function tap_bpm() {
 
       if(bpm_tap_arr.length == 4) {
 
-        var sum = bpm_tap_arr[0] + bpm_tap_arr[1] + bpm_tap_arr[2] + bpm_tap_arr[3];
+        var sum = bpm_tap_arr[0] + bpm_tap_arr[1]
+        sum += bpm_tap_arr[2] + bpm_tap_arr[3];
         pdata.bpm = sum / 4;
       }
 
@@ -31,6 +32,20 @@ function tap_bpm() {
     }
   }
   bpm_tap_prev_time = this_time;
+}
+
+function blink_bpm() {
+
+  if(mr_bmp_sn == mr_current_sn) {
+
+    midiren_output.sendMessage([175 + MIDIREN_CH, 61, 127]);
+    setTimeout(function() {
+
+      if(mr_bmp_sn == mr_current_sn) {
+        midiren_output.sendMessage([175 + MIDIREN_CH, 61, 0]);
+      }
+    }, 50);
+  }
 }
 
 function ms_per_tick() {
@@ -211,6 +226,8 @@ function midi_logic_per_tick() {
     current_note_t4 = que_note_t4;
     current_note_t5 = que_note_t5;
     current_note_t6 = que_note_t6;
+
+    blink_bpm();
 
     prog_spot++;
     if(prog_spot >= chord_progressions[current_chord_progression].length) {
