@@ -2,8 +2,8 @@ console.log('MIDIRen now running. Enjoy!');
 //////////
 // Include
 var fs = require('fs');
-eval(fs.readFileSync('./variables.js').toString());
 eval(fs.readFileSync('./functions.js').toString());
+eval(fs.readFileSync('./variables.js').toString());
 
 var midi_output = new midi.output();
 midi_output.openPort(UX16_MIDI_IO_PORT);

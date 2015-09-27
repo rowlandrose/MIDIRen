@@ -2,6 +2,34 @@ function clone(a) {
    return JSON.parse(JSON.stringify(a));
 }
 
+function init_preset() {
+
+  // clone selected preset into 'pdata'
+  pdata = clone( presets[selected_preset] );
+
+  // Init velocity screen
+  for(var i = 0; i < 6; i++) {
+    var m_cc = velocity_track_to_mr_cc(i + 1, pdata.track_velocity[i]);
+    mr_set_velocity(m_cc);
+  }
+  // Init pattern screen
+  for(var i = 0; i < 6; i++) {
+    var m_cc = pattern_track_to_mr_cc(i + 1, pdata.track_pattern[i]);
+    mr_set_pattern(m_cc);
+  }
+  // Init note/random screen
+  for(var i = 0; i < 6; i++) {
+    var m_cc = note_ran_track_to_mr_cc(i + 1, pdata.track_note_ran[i]);
+    mr_set_note_ran(m_cc);
+  }
+  // Init root note screen
+  mr_set_root_note(root_note_to_mr_cc(pdata.root_note));
+  // Init chord prog screen
+  mr_set_chord_prog(chord_prog_to_mr_cc(pdata.chord_prog));
+  // Init preset screen
+  mr_set_preset(preset_to_mr_cc(selected_preset));
+}
+
 function tap_bpm() {
   // have another process make this blink with the tempo
   // Does a running average of the last four taps, min bpm 30
@@ -254,6 +282,43 @@ function midi_panic() {
 
 // MIDIRen set functions
 // Sets variable and changes LEDs on MIDIRen if neccessary
+
+function mr_set_preset(mr_cc) {
+
+  var track_ccs = [
+    [44,40,36,32,12,8,4,0],
+    [45,41,37,33,13,9,5,1],
+    [46,42,38,34,14,10,6,2],
+    [47,43,39,35,15,11,7,3],
+    [60,56,52,48,28,24,20,16],
+    [61,57,53,49,29,25,21,17]
+  ];
+  var ps_s = [
+    [42,36,30,24,18,12,6,0],
+    [43,37,31,25,19,13,7,1],
+    [44,38,32,26,20,14,8,2],
+    [45,39,33,27,21,15,9,3],
+    [46,40,34,28,22,16,10,4],
+    [47,41,35,29,23,17,11,5]
+  ];
+
+  // Build preset screen and update selected preset
+  for(var i = 0; i < track_ccs.length; i++) {
+    for(var j = 0; j < track_ccs[i].length; j++) {
+      if(track_ccs[i][j] == mr_cc) {
+        selected_preset = ps_s[i][j];
+        init_preset();
+        mrs[mr_preset_sn][mr_cc] = 127;
+      } else {
+        mrs[mr_preset_sn][mr_cc] = 0;
+      }
+    }
+  }
+
+  if(mr_preset_sn == mr_current_sn) {
+    mr_screen_refresh();
+  }
+}
 
 function mr_set_bpm(mr_cc) {
 
@@ -1883,6 +1948,35 @@ function chord_prog_to_mr_cc(chord_prog) {
   for(var i = 0; i < chord_progs.length; i++) {
     for(var j = 0; j < chord_progs[i].length; j++) {
       if(chord_progs[i][j] == chord_prog) {
+        return track_ccs[i][j];
+      }
+    }
+  }
+  return 0;
+}
+
+function preset_to_mr_cc(ps) {
+
+  var track_ccs = [
+    [44,40,36,32,12,8,4,0],
+    [45,41,37,33,13,9,5,1],
+    [46,42,38,34,14,10,6,2],
+    [47,43,39,35,15,11,7,3],
+    [60,56,52,48,28,24,20,16],
+    [61,57,53,49,29,25,21,17]
+  ];
+  var ps_s = [
+    [42,36,30,24,18,12,6,0],
+    [43,37,31,25,19,13,7,1],
+    [44,38,32,26,20,14,8,2],
+    [45,39,33,27,21,15,9,3],
+    [46,40,34,28,22,16,10,4],
+    [47,41,35,29,23,17,11,5]
+  ];
+
+  for(var i = 0; i < ps_s.length; i++) {
+    for(var j = 0; j < ps_s[i].length; j++) {
+      if(ps_s[i][j] == ps) {
         return track_ccs[i][j];
       }
     }
