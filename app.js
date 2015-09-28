@@ -31,7 +31,71 @@ midiren_input.on('message', function(deltaTime, message) {
   //console.log(message);
   if(message[0] == 175 + MIDIREN_CH && message[2] == 127) {
 
-    if(mr_current_sn == 0) {
+    if(message[1] == 19) {
+
+      mr_current_sn = 0;
+      mr_screen_refresh();
+      mr_option_refresh();
+
+    } else if(message[1] == 23) {
+
+      mr_current_sn = 1;
+      mr_screen_refresh();
+      mr_option_refresh();
+
+    } else if(message[1] == 27) {
+
+      mr_current_sn = 2;
+      mr_screen_refresh();
+      mr_option_refresh();
+
+    } else if(message[1] == 31) {
+
+      mr_current_sn = 3;
+      mr_screen_refresh();
+      mr_option_refresh();
+
+    } else if(message[1] == 51) {
+
+      mr_current_sn = 4;
+      mr_screen_refresh();
+      mr_option_refresh();
+
+    } else if(message[1] == 55) {
+
+      mr_current_sn = 5;
+      mr_screen_refresh();
+      mr_option_refresh();
+
+    } else if(message[1] == 59) {
+
+      mr_current_sn = 6;
+      mr_screen_refresh();
+      mr_option_refresh();
+
+    } else if(message[1] == 63) {
+
+      mr_current_sn = 7;
+      mr_screen_refresh();
+      mr_option_refresh();
+
+    } else if(message[1] == 18) {
+      // position column
+    } else if(message[1] == 22) {
+      // position column
+    } else if(message[1] == 26) {
+      // position column
+    } else if(message[1] == 30) {
+      // position column
+    } else if(message[1] == 50) {
+      // position column
+    } else if(message[1] == 54) {
+      // position column
+    } else if(message[1] == 58) {
+      // position column
+    } else if(message[1] == 62) {
+      // position column
+    } else if(mr_current_sn == 0) {
       mr_set_velocity(message[1]);
     } else if(mr_current_sn == 1) {
       mr_set_pattern(message[1]);
@@ -238,6 +302,7 @@ midi_input.ignoreTypes(true, false, true);
 //midi_input.closePort();
 
 init_preset();
+mr_option_refresh();
 
 var time = process.hrtime();
 var midi_output_timeout;

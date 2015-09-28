@@ -3,9 +3,9 @@ var mrs = [];
 for(var i = 0; i < 8; i++) {
 
   mrs[i] = [];
-  for(var j = 0; j < 64; j++) {
+  /*for(var j = 0; j < 64; j++) {
     mrs[i][j] = 0;
-  }
+  }*/
 }
 
 var mr_velocity_sn = 0;

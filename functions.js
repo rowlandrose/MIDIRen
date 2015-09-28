@@ -457,7 +457,7 @@ function mr_set_chord_prog(mr_cc) {
         pdata.chord_prog = chord_progs[i][j];
         mrs[mr_chord_prog_sn][mr_cc] = 127;
       } else {
-        mrs[mr_chord_prog_sn][mr_cc] = 0;
+        mrs[mr_chord_prog_sn][track_ccs[i][j]] = 0;
       }
     }
   }
@@ -493,7 +493,7 @@ function mr_set_root_note(mr_cc) {
         pdata.root_note = root_notes[i][j];
         mrs[mr_root_note_sn][mr_cc] = 127;
       } else {
-        mrs[mr_root_note_sn][mr_cc] = 0;
+        mrs[mr_root_note_sn][track_ccs[i][j]] = 0;
       }
     }
   }
@@ -1594,7 +1594,22 @@ function mr_screen_refresh() {
   // Loop through mrs[mr_current_sn] and send midi cc data to MIDIRen
   for(var i = 0; i < mrs[mr_current_sn].length; i++) {
 
-    midiren_output.sendMessage([175 + MIDIREN_CH, i, mrs[mr_current_sn][i]]);
+    if(typeof mrs[mr_current_sn][i] !== 'undefined') {
+      midiren_output.sendMessage([175 + MIDIREN_CH, i, mrs[mr_current_sn][i]]);
+    }
+  }
+}
+
+function mr_option_refresh() {
+
+  var option_arr = [19,23,27,31,51,55,59,63];
+
+  for(var i = 0; i < option_arr.length; i++) {
+    if(mr_current_sn == i) {
+      midiren_output.sendMessage([175 + MIDIREN_CH, option_arr[i], 127]);
+    } else {
+      midiren_output.sendMessage([175 + MIDIREN_CH, option_arr[i], 0]);
+    }
   }
 }
 
