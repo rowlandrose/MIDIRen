@@ -147,8 +147,6 @@ var presets = [
 
 var selected_preset = 0;
 
-init_preset();
-
 // Patterns
 var p_t1_bd = [
   'x---x---x---x---',
@@ -380,9 +378,9 @@ var prev_t5_p = 0;
 var prev_t6_p = 0;
 
 // Constants
-var UX16_MIDI_IO_PORT = 1; // midi port UX16 happens to be on
-var MIDIREN_MIDI_IO_PORT = 2; // midi port MIDIRen happens to be on
-var MIDIREN_CHANNEL = 16;
+var UX16_midi_port = 1; // midi port UX16
+var MIDIRen_midi_port = 2; // midi port MIDIRen
+var MIDIREN_CH = 16;
 var BEATS_PER_MEASURE = 4;
 var PPQ = 4; // Pulse Per Quarter-note (beat), 4 = sixteenth notes
 var CLOCK_PPQ = 24; // PPQ of incoming MIDI timing clock messages

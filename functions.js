@@ -303,11 +303,17 @@ function mr_set_preset(mr_cc) {
   ];
 
   // Build preset screen and update selected preset
+  var prev_preset = selected_preset;
+  var do_init = false;
+
   for(var i = 0; i < track_ccs.length; i++) {
     for(var j = 0; j < track_ccs[i].length; j++) {
       if(track_ccs[i][j] == mr_cc) {
+
         selected_preset = ps_s[i][j];
-        init_preset();
+        if(prev_preset != selected_preset) {
+          do_init = true;
+        }
         mrs[mr_preset_sn][mr_cc] = 127;
       } else {
         mrs[mr_preset_sn][mr_cc] = 0;
@@ -317,6 +323,10 @@ function mr_set_preset(mr_cc) {
 
   if(mr_preset_sn == mr_current_sn) {
     mr_screen_refresh();
+  }
+
+  if(do_init) {
+    init_preset();
   }
 }
 

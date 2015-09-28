@@ -2,29 +2,54 @@ console.log('MIDIRen now running. Enjoy!');
 //////////
 // Include
 var fs = require('fs');
-eval(fs.readFileSync('./functions.js').toString());
 eval(fs.readFileSync('./variables.js').toString());
-
-var midi_output = new midi.output();
-midi_output.openPort(UX16_MIDI_IO_PORT);
+eval(fs.readFileSync('./functions.js').toString());
 
 var midi_input = new midi.input();
 
 var input_port_count = midi_input.getPortCount();
 for(var i = 0; i < input_port_count; i++) {
 
-  console.log(i+': '+midi_input.getPortName(i));
+  var port_name = midi_input.getPortName(i);
+  //console.log(i+': '+midi_input.getPortName(i));
+  if(port_name == 'UX16 20:0') {
+    UX16_midi_port = i;
+  } else if(port_name == 'TeeOnArdu MIDI 24:0') {
+    MIDIRen_midi_port = i;
+  }
 }
 
+var midi_output = new midi.output();
+midi_output.openPort(UX16_midi_port);
+
 var midiren_output = new midi.output();
-midiren_output.openPort(MIDIREN_MIDI_IO_PORT);
+midiren_output.openPort(MIDIRen_midi_port);
 
 var midiren_input = new midi.input();
 midiren_input.on('message', function(deltaTime, message) {
 
-  console.log(message);
+  //console.log(message);
+  if(message[0] == 175 + MIDIREN_CH && message[2] == 127) {
+
+    if(mr_current_sn == 0) {
+      mr_set_velocity(message[1]);
+    } else if(mr_current_sn == 1) {
+      mr_set_pattern(message[1]);
+    } else if(mr_current_sn == 2) {
+      mr_set_note_ran(message[1]);
+    } else if(mr_current_sn == 3) {
+      mr_set_root_note(message[1]);
+    } else if(mr_current_sn == 4) {
+      mr_set_chord_prog(message[1]);
+    } else if(mr_current_sn == 5) {
+      mr_set_bpm(message[1]);
+    } else if(mr_current_sn == 6) {
+      mr_set_preset(message[1]);
+    }
+  }
+
 });
-midiren_input.openPort(MIDIREN_MIDI_IO_PORT);
+midiren_input.openPort(MIDIRen_midi_port);
 
 midi_input.on('message', function(deltaTime, message) {
 
@@ -206,11 +231,13 @@ midi_input.on('message', function(deltaTime, message) {
   }
 });
 
-midi_input.openPort(UX16_MIDI_IO_PORT);
+midi_input.openPort(UX16_midi_port);
 midi_input.ignoreTypes(true, false, true);
 
 // Close the port when done.
 //midi_input.closePort();
+
+init_preset();
 
 var time = process.hrtime();
 var midi_output_timeout;
