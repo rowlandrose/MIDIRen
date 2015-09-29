@@ -28,51 +28,53 @@ function init_preset() {
   mr_set_chord_prog(chord_prog_to_mr_cc(pdata.chord_prog));
   // Init preset screen
   mr_set_preset(preset_to_mr_cc(selected_preset));
+  // Init BPM screen
+  mr_set_bpm(999);
 }
 
 function tap_bpm() {
   // have another process make this blink with the tempo
   // Does a running average of the last four taps, min bpm 30
   // reset to wait for tap 1 after 2 sec of no taps
-  var this_time = process.hrtime();
-  if(bpm_tap_prev_time > 0) {
+  if(bpm_tap_prev_time[0] > 0) {
 
-    var diff = process.hrtime(this_time);
+    var diff = process.hrtime(bpm_tap_prev_time);
 
-    if( diff[1] <  2000000000) { // 2 seconds
+    var nano_diff = diff[0] * 1000000000 + diff[1];
+
+    if( nano_diff <  2000000000) { // 2 seconds
 
       if(bpm_tap_arr.length == 4) {
         bpm_tap_arr.shift();
       }
 
-      bpm_tap_arr.push( 60 / (diff[1] / 1000000000) );
+      bpm_tap_arr.push( 60 / (nano_diff / 1000000000) );
 
       if(bpm_tap_arr.length == 4) {
 
         var sum = bpm_tap_arr[0] + bpm_tap_arr[1]
         sum += bpm_tap_arr[2] + bpm_tap_arr[3];
-        pdata.bpm = sum / 4;
+        pdata.bpm = Math.floor(sum / 4);
       }
 
     } else {
       bpm_tap_arr = [];
-      this_time = 0;
     }
   }
-  bpm_tap_prev_time = this_time;
+  bpm_tap_prev_time = process.hrtime();
 }
 
 function blink_bpm() {
 
-  if(mr_bmp_sn == mr_current_sn) {
+  if(mr_bpm_sn == mr_current_sn) {
 
     midiren_output.sendMessage([175 + MIDIREN_CH, 61, 127]);
     setTimeout(function() {
 
-      if(mr_bmp_sn == mr_current_sn) {
+      if(mr_bpm_sn == mr_current_sn) {
         midiren_output.sendMessage([175 + MIDIREN_CH, 61, 0]);
       }
-    }, 50);
+    }, 10);
   }
 }
 
@@ -93,6 +95,13 @@ function run_output_timeout() {
     if(midiren_play){
       midi_logic_per_tick();
     }
+
+    if(bpm_clock >= PPQ) {
+
+      blink_bpm();
+      bpm_clock = 0;
+    }
+    bpm_clock++;
 
     // Offsets next tick by detected offset.
     // Offset detected as difference in time vs expected time
@@ -255,8 +264,6 @@ function midi_logic_per_tick() {
     current_note_t5 = que_note_t5;
     current_note_t6 = que_note_t6;
 
-    blink_bpm();
-
     prog_spot++;
     if(prog_spot >= chord_progressions[current_chord_progression].length) {
       prog_spot = 0;
@@ -285,14 +292,6 @@ function midi_panic() {
 
 function mr_set_preset(mr_cc) {
 
-  var track_ccs = [
-    [44,40,36,32,12,8,4,0],
-    [45,41,37,33,13,9,5,1],
-    [46,42,38,34,14,10,6,2],
-    [47,43,39,35,15,11,7,3],
-    [60,56,52,48,28,24,20,16],
-    [61,57,53,49,29,25,21,17]
-  ];
   var ps_s = [
     [42,36,30,24,18,12,6,0],
     [43,37,31,25,19,13,7,1],
@@ -316,7 +315,7 @@ function mr_set_preset(mr_cc) {
         }
         mrs[mr_preset_sn][mr_cc] = 127;
       } else {
-        mrs[mr_preset_sn][mr_cc] = 0;
+        mrs[mr_preset_sn][track_ccs[i][j]] = 0;
       }
     }
   }
@@ -336,17 +335,17 @@ function mr_set_bpm(mr_cc) {
   var digit_2 = [8,9,10,11,24,25,12,13,14,15];
   var digit_3 = [32,33,34,35,48,49,36,37,38,39];
 
-  if(mr_cc == 40) {
+  if(mr_cc == 40 && !ext_bpm) {
     pdata.bpm -= 10;
-  } else if(mr_cc == 41) {
+  } else if(mr_cc == 41 && !ext_bpm) {
     pdata.bpm -= 5;
-  } else if(mr_cc == 42) {
+  } else if(mr_cc == 42 && !ext_bpm) {
     pdata.bpm -= 1;
-  } else if(mr_cc == 43) {
+  } else if(mr_cc == 43 && !ext_bpm) {
     pdata.bpm += 1;
-  } else if(mr_cc == 56) {
+  } else if(mr_cc == 56 && !ext_bpm) {
     pdata.bpm += 5;
-  } else if(mr_cc == 57) {
+  } else if(mr_cc == 57 && !ext_bpm) {
     pdata.bpm += 10;
   } else if(mr_cc == 44) {
     midiren_play = true;
@@ -360,23 +359,30 @@ function mr_set_bpm(mr_cc) {
     run_output_timeout(0);
   } else if(mr_cc == 60) {
     pdata.bpm = presets[selected_preset].bpm;
-  } else if(mr_cc == 61) {
+  } else if(mr_cc == 61 && !ext_bpm) {
     tap_bpm();
-  } else if(digit_1.indexOf(mr_cc) != -1) {
+  } else if(digit_1.indexOf(mr_cc) != -1 && !ext_bpm) {
 
     var temp_bpm = pdata.bpm % 100;
     pdata.bpm = temp_bpm + (100 * digit_1.indexOf(mr_cc));
 
-  } else if(digit_2.indexOf(mr_cc) != -1) {
+  } else if(digit_2.indexOf(mr_cc) != -1 && !ext_bpm) {
 
     var temp_bpm_h = Math.floor(pdata.bpm / 100) * 100;
     var temp_bpm_ones = pdata.bpm % 10;
     pdata.bpm = temp_bpm_h + (10 * digit_2.indexOf(mr_cc)) + temp_bpm_ones;
 
-  } else if(digit_3.indexOf(mr_cc) != -1) {
+  } else if(digit_3.indexOf(mr_cc) != -1 && !ext_bpm) {
 
     var temp_bpm = Math.floor(pdata.bpm / 10) * 10;
     pdata.bpm = temp_bpm + digit_3.indexOf(mr_cc);
+  }
+
+  // Correct BPM if too big or too small
+  if(pdata.bpm < 30) {
+    pdata.bpm = 30;
+  } else if(pdata.bpm > 500) {
+    pdata.bpm = 500;
   }
 
   // Update bpm screen
@@ -385,9 +391,9 @@ function mr_set_bpm(mr_cc) {
     var temp_bpm_h = Math.floor(pdata.bpm / 100);
 
     if(temp_bpm_h == i) {
-      mrs[mr_bmp_sn][digit_1[i]] = 127;
+      mrs[mr_bpm_sn][digit_1[i]] = 127;
     } else {
-      mrs[mr_bmp_sn][digit_1[i]] = 0;
+      mrs[mr_bpm_sn][digit_1[i]] = 0;
     }
   }
   for(var i = 0; i < digit_2.length; i++) {
@@ -396,9 +402,9 @@ function mr_set_bpm(mr_cc) {
     temp_bpm = Math.floor(temp_bpm / 10);
 
     if(temp_bpm == i) {
-      mrs[mr_bmp_sn][digit_2[i]] = 127;
+      mrs[mr_bpm_sn][digit_2[i]] = 127;
     } else {
-      mrs[mr_bmp_sn][digit_2[i]] = 0;
+      mrs[mr_bpm_sn][digit_2[i]] = 0;
     }
   }
   for(var i = 0; i < digit_3.length; i++) {
@@ -406,41 +412,33 @@ function mr_set_bpm(mr_cc) {
     var temp_bpm = pdata.bpm % 10;
 
     if(temp_bpm == i) {
-      mrs[mr_bmp_sn][digit_3[i]] = 127;
+      mrs[mr_bpm_sn][digit_3[i]] = 127;
     } else {
-      mrs[mr_bmp_sn][digit_3[i]] = 0;
+      mrs[mr_bpm_sn][digit_3[i]] = 0;
     }
   }
   if(midiren_play) {
-    mrs[mr_bmp_sn][44] = 127;
-    mrs[mr_bmp_sn][45] = 0;
+    mrs[mr_bpm_sn][44] = 127;
+    mrs[mr_bpm_sn][45] = 0;
   } else {
-    mrs[mr_bmp_sn][44] = 0;
-    mrs[mr_bmp_sn][45] = 127;
+    mrs[mr_bpm_sn][44] = 0;
+    mrs[mr_bpm_sn][45] = 127;
   }
   if(ext_bpm) {
-    mrs[mr_bmp_sn][46] = 127;
-    mrs[mr_bmp_sn][47] = 0;
+    mrs[mr_bpm_sn][46] = 127;
+    mrs[mr_bpm_sn][47] = 0;
   } else {
-    mrs[mr_bmp_sn][46] = 0;
-    mrs[mr_bmp_sn][47] = 127;
+    mrs[mr_bpm_sn][46] = 0;
+    mrs[mr_bpm_sn][47] = 127;
   }
 
-  if(mr_bmp_sn == mr_current_sn) {
+  if(mr_bpm_sn == mr_current_sn) {
     mr_screen_refresh();
   }
 }
 
 function mr_set_chord_prog(mr_cc) {
 
-  var track_ccs = [
-    [44,40,36,32,12,8,4,0],
-    [45,41,37,33,13,9,5,1],
-    [46,42,38,34,14,10,6,2],
-    [47,43,39,35,15,11,7,3],
-    [60,56,52,48,28,24,20,16],
-    [61,57,53,49,29,25,21,17]
-  ];
   var chord_progs = [
     [42,36,30,24,18,12,6,0],
     [43,37,31,25,19,13,7,1],
@@ -469,14 +467,6 @@ function mr_set_chord_prog(mr_cc) {
 
 function mr_set_root_note(mr_cc) {
 
-  var track_ccs = [
-    [44,40,36,32,12,8,4,0],
-    [45,41,37,33,13,9,5,1],
-    [46,42,38,34,14,10,6,2],
-    [47,43,39,35,15,11,7,3],
-    [60,56,52,48,28,24,20,16],
-    [61,57,53,49,29,25,21,17]
-  ];
   var root_notes = [
     [24,30,36,42,48,54,60,66],
     [25,31,37,43,49,55,61,67],
@@ -507,15 +497,6 @@ function mr_set_note_ran(mr_cc) {
 
   var track_num = 1;
   var note_ran_num = 0;
-
-  var track_ccs = [
-    [44,40,36,32,12,8,4,0],
-    [45,41,37,33,13,9,5,1],
-    [46,42,38,34,14,10,6,2],
-    [47,43,39,35,15,11,7,3],
-    [60,56,52,48,28,24,20,16],
-    [61,57,53,49,29,25,21,17]
-  ];
 
   switch(mr_cc) {
 
@@ -743,15 +724,6 @@ function mr_set_pattern(mr_cc) {
 
   var track_num = 1;
   var pattern_num = 0;
-
-  var track_ccs = [
-    [44,40,36,32,12,8,4,0],
-    [45,41,37,33,13,9,5,1],
-    [46,42,38,34,14,10,6,2],
-    [47,43,39,35,15,11,7,3],
-    [60,56,52,48,28,24,20,16],
-    [61,57,53,49,29,25,21,17]
-  ];
 
   switch(mr_cc) {
 
@@ -1924,14 +1896,6 @@ function note_ran_track_to_mr_cc(track_num, note_ran_num) {
 
 function root_note_to_mr_cc(note) {
 
-  var track_ccs = [
-    [44,40,36,32,12,8,4,0],
-    [45,41,37,33,13,9,5,1],
-    [46,42,38,34,14,10,6,2],
-    [47,43,39,35,15,11,7,3],
-    [60,56,52,48,28,24,20,16],
-    [61,57,53,49,29,25,21,17]
-  ];
   var root_notes = [
     [24,30,36,42,48,54,60,66],
     [25,31,37,43,49,55,61,67],
@@ -1953,14 +1917,6 @@ function root_note_to_mr_cc(note) {
 
 function chord_prog_to_mr_cc(chord_prog) {
 
-  var track_ccs = [
-    [44,40,36,32,12,8,4,0],
-    [45,41,37,33,13,9,5,1],
-    [46,42,38,34,14,10,6,2],
-    [47,43,39,35,15,11,7,3],
-    [60,56,52,48,28,24,20,16],
-    [61,57,53,49,29,25,21,17]
-  ];
   var chord_progs = [
     [42,36,30,24,18,12,6,0],
     [43,37,31,25,19,13,7,1],
@@ -1982,14 +1938,6 @@ function chord_prog_to_mr_cc(chord_prog) {
 
 function preset_to_mr_cc(ps) {
 
-  var track_ccs = [
-    [44,40,36,32,12,8,4,0],
-    [45,41,37,33,13,9,5,1],
-    [46,42,38,34,14,10,6,2],
-    [47,43,39,35,15,11,7,3],
-    [60,56,52,48,28,24,20,16],
-    [61,57,53,49,29,25,21,17]
-  ];
   var ps_s = [
     [42,36,30,24,18,12,6,0],
     [43,37,31,25,19,13,7,1],

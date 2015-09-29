@@ -1,11 +1,23 @@
 // MIDIRen Screens
+var track_ccs = [
+  [44,40,36,32,12,8,4,0],
+  [45,41,37,33,13,9,5,1],
+  [46,42,38,34,14,10,6,2],
+  [47,43,39,35,15,11,7,3],
+  [60,56,52,48,28,24,20,16],
+  [61,57,53,49,29,25,21,17]
+];
+
 var mrs = [];
+
 for(var i = 0; i < 8; i++) {
 
   mrs[i] = [];
-  /*for(var j = 0; j < 64; j++) {
-    mrs[i][j] = 0;
-  }*/
+  for(var j = 0; j < track_ccs.length; j++) {
+    for(var k = 0; k < track_ccs[j].length; k++) {
+      mrs[i][track_ccs[j][k]] = 0;
+    }
+  }
 }
 
 var mr_velocity_sn = 0;
@@ -378,14 +390,15 @@ var prev_t5_p = 0;
 var prev_t6_p = 0;
 
 // Constants
-var UX16_midi_port = 1; // midi port UX16
-var MIDIRen_midi_port = 2; // midi port MIDIRen
 var MIDIREN_CH = 16;
 var BEATS_PER_MEASURE = 4;
 var PPQ = 4; // Pulse Per Quarter-note (beat), 4 = sixteenth notes
 var CLOCK_PPQ = 24; // PPQ of incoming MIDI timing clock messages
 var CLOCK_PER_CLICK = Math.floor(CLOCK_PPQ / PPQ);
 var NOTE_OFFSET = -12; // Notes away from chosen root note
+
+var UX16_midi_port = 1; // midi port UX16
+var MIDIRen_midi_port = 2; // midi port MIDIRen
 
 var bpm_tap_arr = [];
 var bpm_tap_prev_time = 0;
@@ -395,6 +408,7 @@ var midi = require('midi'); // Include midi library
 var midiren_play = false;
 
 var ext_bpm = false;
+var bpm_clock = 24;
 var current_clock = CLOCK_PER_CLICK;
 var current_pulse = 0;
 var root_note = 48;

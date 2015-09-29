@@ -292,14 +292,18 @@ midi_input.on('message', function(deltaTime, message) {
       }
     }
     current_clock++;
+
+    if(bpm_clock == 24) {
+
+      blink_bpm();
+      bpm_clock = 0;
+    }
+    bpm_clock++;
   }
 });
 
 midi_input.openPort(UX16_midi_port);
 midi_input.ignoreTypes(true, false, true);
-
-// Close the port when done.
-//midi_input.closePort();
 
 init_preset();
 mr_option_refresh();
@@ -311,6 +315,9 @@ var prev_tick = ms_per_tick();
 if(!ext_bpm) {
   run_output_timeout(0);
 }
+
+// Close the port when done.
+//midi_input.closePort();
 
 // Close the port when done.
 //midi_output.closePort();
