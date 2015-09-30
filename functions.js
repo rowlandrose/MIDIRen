@@ -117,13 +117,13 @@ function midi_logic_per_tick() {
 
   // current_pulse > 0 ----> makes sure that the bd hits on 0, sounds better
   // Random Track 1
-  if(Math.floor(Math.random() * 7) + 1 <= current_rand_t1 && current_pulse > 0){
+  if(Math.floor(Math.random() * 7) + 1 <= pdata.track_note_ran[0] && current_pulse > 0){
     r_applied_t1 = Math.floor(Math.random() * 16);
   } else {
     r_applied_t1 = current_pulse;
   }
   // Random Track 2
-  if(Math.floor(Math.random() * 7) + 1 <= current_rand_t2){
+  if(Math.floor(Math.random() * 7) + 1 <= pdata.track_note_ran[1]){
     r_applied_t2 = Math.floor(Math.random() * 16);
   } else {
     r_applied_t2 = current_pulse;
@@ -132,14 +132,14 @@ function midi_logic_per_tick() {
   // Track 1 - NES BD
   if(p_t1_bd[current_pattern_t1].charAt(r_applied_t1) == 'x') {
 
-    midi_output.sendMessage([158, 57, 127]);
+    midi_output.sendMessage([158, 57, pdata.track_velocity[0]]);
     setTimeout(function(){ midi_output.sendMessage([158, 57, 0]); }, 250);
   }
   ///////////////////
   // Track 1 - NES SN
   if(p_t1_sn[current_pattern_t1].charAt(r_applied_t1) == 'x') {
 
-    midi_output.sendMessage([158, 60, 127]);
+    midi_output.sendMessage([158, 60, pdata.track_velocity[0]]);
     setTimeout(function(){ midi_output.sendMessage([158, 60, 0]); }, 250);
   }
   /////////////////////////////////
@@ -149,7 +149,9 @@ function midi_logic_per_tick() {
   if(t2_num > 0) {
 
     // Timeout on initial message so BD and SN can trigger, NES quirk
-    setTimeout(function(){ midi_output.sendMessage([158, t2_num, 127]); }, 10);
+    setTimeout(function(){
+      midi_output.sendMessage([158, t2_num, pdata.track_velocity[1]]);
+    }, 10);
     setTimeout(function(){ midi_output.sendMessage([158, t2_num, 0]); }, 250);
   }
   //////////////////////////
@@ -181,23 +183,25 @@ function midi_logic_per_tick() {
     // If prev char was 'x', then send midi note off
     if(t3_char_prev == 'x' || t3_char_prev == '>'
       || current_pattern_t3 != prev_t3_p) {
-      midi_output.sendMessage([138, current_t3_num+12, 30]);
-      midi_output.sendMessage([139, current_t3_num, 30]);
-      midi_output.sendMessage([140, current_t3_num-12, 30]);
+      midi_output.sendMessage([138, prev_played_num_t3+12, 30]);
+      midi_output.sendMessage([139, prev_played_num_t3, 30]);
+      midi_output.sendMessage([140, prev_played_num_t3-12, 30]);
     }
 
-    midi_output.sendMessage([154, current_t3_num+12, 30]);
-    midi_output.sendMessage([155, current_t3_num, 30]);
-    midi_output.sendMessage([156, current_t3_num-12, 30]);
+    midi_output.sendMessage([154, current_t3_num+12, pdata.track_velocity[2]]);
+    midi_output.sendMessage([155, current_t3_num, pdata.track_velocity[2]]);
+    midi_output.sendMessage([156, current_t3_num-12, pdata.track_velocity[2]]);
+
+    prev_played_num_t3 = current_t3_num;
 
   } else if(t3_char == '-') {
 
     // If prev char was 'x', then send midi note off
     if(t3_char_prev == 'x' || t3_char_prev == '>'
       || current_pattern_t3 != prev_t3_p) {
-      midi_output.sendMessage([138, current_t3_num+12, 30]);
-      midi_output.sendMessage([139, current_t3_num, 30]);
-      midi_output.sendMessage([140, current_t3_num-12, 30]);
+      midi_output.sendMessage([138, prev_played_num_t3+12, 30]);
+      midi_output.sendMessage([139, prev_played_num_t3, 30]);
+      midi_output.sendMessage([140, prev_played_num_t3-12, 30]);
     }
   }
   prev_t3_p = current_pattern_t3;
@@ -231,17 +235,19 @@ function midi_logic_per_tick() {
     // If prev char was 'x', then send midi note off
     if(t4_char_prev == 'x' || t4_char_prev == '>'
       || current_pattern_t4 != prev_t4_p) {
-      midi_output.sendMessage([133, current_t4_num, 30]);
+      midi_output.sendMessage([133, prev_played_num_t4, 127]);
     }
 
-    midi_output.sendMessage([149, current_t4_num, 30]);
+    midi_output.sendMessage([149, current_t4_num, pdata.track_velocity[3]]);
+
+    prev_played_num_t4 = current_t4_num;
 
   } else if(t4_char == '-') {
 
     // If prev char was 'x', then send midi note off
     if(t4_char_prev == 'x' || t4_char_prev == '>'
       || current_pattern_t4 != prev_t4_p) {
-      midi_output.sendMessage([133, current_t4_num, 30]);
+      midi_output.sendMessage([133, prev_played_num_t4, 127]);
     }
   }
   prev_t4_p = current_pattern_t4;
@@ -252,24 +258,24 @@ function midi_logic_per_tick() {
 
     current_pulse = 0;
 
-    current_pattern_t1 = que_pattern_t1;
-    current_pattern_t2 = que_pattern_t2;
-    current_pattern_t3 = que_pattern_t3;
-    current_pattern_t4 = que_pattern_t4;
-    current_pattern_t5 = que_pattern_t5;
-    current_pattern_t6 = que_pattern_t6;
+    current_pattern_t1 = pdata.track_pattern[0];
+    current_pattern_t2 = pdata.track_pattern[1];
+    current_pattern_t3 = pdata.track_pattern[2];
+    current_pattern_t4 = pdata.track_pattern[3];
+    current_pattern_t5 = pdata.track_pattern[4];
+    current_pattern_t6 = pdata.track_pattern[5];
 
-    current_note_t3 = que_note_t3;
-    current_note_t4 = que_note_t4;
-    current_note_t5 = que_note_t5;
-    current_note_t6 = que_note_t6;
+    current_note_t3 = pdata.track_note_ran[2];
+    current_note_t4 = pdata.track_note_ran[3];
+    current_note_t5 = pdata.track_note_ran[4];
+    current_note_t6 = pdata.track_note_ran[5];
 
     prog_spot++;
     if(prog_spot >= chord_progressions[current_chord_progression].length) {
       prog_spot = 0;
     }
     current_chord = chord_progressions[current_chord_progression][prog_spot];
-    current_root = root_note + chord_positions[current_chord];
+    current_root = pdata.root_note + chord_positions[current_chord];
   } else {
     current_pulse++;
   }
@@ -277,11 +283,13 @@ function midi_logic_per_tick() {
 
 function midi_panic() {
 
-  // All notes off on channel 14 (Shruthi-1)
-  for(var i = 0; i <= 127; i++) {
+  // Single note off on channel 6 (Shruthi-1)
+  /*for(var i = 0; i <= 127; i++) {
     midi_output.sendMessage([133, i, 30]);
-  }
-  // Single note off message on channels 1-3 (NES)
+  }*/
+  midi_output.sendMessage([133, prev_played_num_t4, 127]);
+
+  // Single note off message on channels 11-13 (NES)
   midi_output.sendMessage([138, 0, 30]);
   midi_output.sendMessage([139, 0, 30]);
   midi_output.sendMessage([140, 0, 30]);
@@ -351,6 +359,11 @@ function mr_set_bpm(mr_cc) {
     midiren_play = true;
   } else if(mr_cc == 45) {
     midiren_play = false;
+    midi_panic();
+    current_pulse = 0;
+    prog_spot = 0;
+    current_chord = chord_progressions[current_chord_progression][prog_spot];
+    current_root = pdata.root_note + chord_positions[current_chord];
   } else if(mr_cc == 46) {
     ext_bpm = true;
     clearTimeout(midi_output_timeout);
@@ -707,7 +720,7 @@ function mr_set_note_ran(mr_cc) {
     default:
       // no change
   }
-  pdata.track_note_ran[track_num] = note_ran_num; // set new pattern
+  pdata.track_note_ran[track_num - 1] = note_ran_num; // set new pattern
 
   // Update note/random screen. Clear then set for target track.
   for(var i = 0; i < track_ccs[track_num - 1].length; i++) {
@@ -934,7 +947,7 @@ function mr_set_pattern(mr_cc) {
     default:
       // no change
   }
-  pdata.track_pattern[track_num] = pattern_num; // set new pattern
+  pdata.track_pattern[track_num - 1] = pattern_num; // set new pattern
 
   // Update pattern screen. Clear then set for target track.
   for(var i = 0; i < track_ccs[track_num - 1].length; i++) {
@@ -971,7 +984,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 40:
       track_num = 1;
-      velocity = 44;
+      velocity = 15;
       on_ccs.push(44);
       on_ccs.push(40);
       off_ccs.push(36);
@@ -983,7 +996,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 36:
       track_num = 1;
-      velocity = 57;
+      velocity = 30;
       on_ccs.push(44);
       on_ccs.push(40);
       on_ccs.push(36);
@@ -995,7 +1008,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 32:
       track_num = 1;
-      velocity = 71;
+      velocity = 60;
       on_ccs.push(44);
       on_ccs.push(40);
       on_ccs.push(36);
@@ -1069,7 +1082,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 41:
       track_num = 2;
-      velocity = 44;
+      velocity = 15;
       on_ccs.push(45);
       on_ccs.push(41);
       off_ccs.push(37);
@@ -1081,7 +1094,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 37:
       track_num = 2;
-      velocity = 57;
+      velocity = 30;
       on_ccs.push(45);
       on_ccs.push(41);
       on_ccs.push(37);
@@ -1093,7 +1106,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 33:
       track_num = 2;
-      velocity = 71;
+      velocity = 60;
       on_ccs.push(45);
       on_ccs.push(41);
       on_ccs.push(37);
@@ -1167,7 +1180,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 42:
       track_num = 3;
-      velocity = 44;
+      velocity = 15;
       on_ccs.push(46);
       on_ccs.push(42);
       off_ccs.push(38);
@@ -1179,7 +1192,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 38:
       track_num = 3;
-      velocity = 57;
+      velocity = 30;
       on_ccs.push(46);
       on_ccs.push(42);
       on_ccs.push(38);
@@ -1191,7 +1204,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 34:
       track_num = 3;
-      velocity = 71;
+      velocity = 60;
       on_ccs.push(46);
       on_ccs.push(42);
       on_ccs.push(38);
@@ -1265,7 +1278,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 43:
       track_num = 4;
-      velocity = 44;
+      velocity = 15;
       on_ccs.push(47);
       on_ccs.push(43);
       off_ccs.push(39);
@@ -1277,7 +1290,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 39:
       track_num = 4;
-      velocity = 57;
+      velocity = 30;
       on_ccs.push(47);
       on_ccs.push(43);
       on_ccs.push(39);
@@ -1289,7 +1302,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 35:
       track_num = 4;
-      velocity = 71;
+      velocity = 60;
       on_ccs.push(47);
       on_ccs.push(43);
       on_ccs.push(39);
@@ -1363,7 +1376,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 56:
       track_num = 5;
-      velocity = 44;
+      velocity = 15;
       on_ccs.push(60);
       on_ccs.push(56);
       off_ccs.push(52);
@@ -1375,7 +1388,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 52:
       track_num = 5;
-      velocity = 57;
+      velocity = 30;
       on_ccs.push(60);
       on_ccs.push(56);
       on_ccs.push(52);
@@ -1387,7 +1400,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 48:
       track_num = 5;
-      velocity = 71;
+      velocity = 60;
       on_ccs.push(60);
       on_ccs.push(56);
       on_ccs.push(52);
@@ -1461,7 +1474,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 57:
       track_num = 6;
-      velocity = 44;
+      velocity = 15;
       on_ccs.push(61);
       on_ccs.push(57);
       off_ccs.push(53);
@@ -1473,7 +1486,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 53:
       track_num = 6;
-      velocity = 57;
+      velocity = 30;
       on_ccs.push(61);
       on_ccs.push(57);
       on_ccs.push(53);
@@ -1485,7 +1498,7 @@ function mr_set_velocity(mr_cc) {
       break;
     case 49:
       track_num = 6;
-      velocity = 71;
+      velocity = 60;
       on_ccs.push(61);
       on_ccs.push(57);
       on_ccs.push(53);
@@ -1547,7 +1560,7 @@ function mr_set_velocity(mr_cc) {
     default:
       // no change
   }
-  pdata.track_velocity[track_num] = velocity; // set new velocity
+  pdata.track_velocity[track_num - 1] = velocity; // set new velocity
 
   // Build velocity screen
   for(var i = 0; i < on_ccs.length; i++) {
@@ -1595,11 +1608,11 @@ function velocity_track_to_mr_cc(track_num, velocity) {
     return 8;
   } else if(track_num == 1 && velocity == 85) {
     return 12;
-  } else if(track_num == 1 && velocity == 71) {
+  } else if(track_num == 1 && velocity == 60) {
     return 32;
-  } else if(track_num == 1 && velocity == 57) {
+  } else if(track_num == 1 && velocity == 30) {
     return 36;
-  } else if(track_num == 1 && velocity == 44) {
+  } else if(track_num == 1 && velocity == 15) {
     return 40;
   } else if(track_num == 1 && velocity == 0) {
     return 44;
@@ -1611,11 +1624,11 @@ function velocity_track_to_mr_cc(track_num, velocity) {
     return 9;
   } else if(track_num == 2 && velocity == 85) {
     return 13;
-  } else if(track_num == 2 && velocity == 71) {
+  } else if(track_num == 2 && velocity == 60) {
     return 33;
-  } else if(track_num == 2 && velocity == 57) {
+  } else if(track_num == 2 && velocity == 30) {
     return 37;
-  } else if(track_num == 2 && velocity == 44) {
+  } else if(track_num == 2 && velocity == 15) {
     return 41;
   } else if(track_num == 2 && velocity == 0) {
     return 45;
@@ -1627,11 +1640,11 @@ function velocity_track_to_mr_cc(track_num, velocity) {
     return 10;
   } else if(track_num == 3 && velocity == 85) {
     return 14;
-  } else if(track_num == 3 && velocity == 71) {
+  } else if(track_num == 3 && velocity == 60) {
     return 34;
-  } else if(track_num == 3 && velocity == 57) {
+  } else if(track_num == 3 && velocity == 30) {
     return 38;
-  } else if(track_num == 3 && velocity == 44) {
+  } else if(track_num == 3 && velocity == 15) {
     return 42;
   } else if(track_num == 3 && velocity == 0) {
     return 46;
@@ -1643,11 +1656,11 @@ function velocity_track_to_mr_cc(track_num, velocity) {
     return 11;
   } else if(track_num == 4 && velocity == 85) {
     return 15;
-  } else if(track_num == 4 && velocity == 71) {
+  } else if(track_num == 4 && velocity == 60) {
     return 35;
-  } else if(track_num == 4 && velocity == 57) {
+  } else if(track_num == 4 && velocity == 30) {
     return 39;
-  } else if(track_num == 4 && velocity == 44) {
+  } else if(track_num == 4 && velocity == 15) {
     return 43;
   } else if(track_num == 4 && velocity == 0) {
     return 47;
@@ -1659,11 +1672,11 @@ function velocity_track_to_mr_cc(track_num, velocity) {
     return 24;
   } else if(track_num == 5 && velocity == 85) {
     return 28;
-  } else if(track_num == 5 && velocity == 71) {
+  } else if(track_num == 5 && velocity == 60) {
     return 48;
-  } else if(track_num == 5 && velocity == 57) {
+  } else if(track_num == 5 && velocity == 30) {
     return 52;
-  } else if(track_num == 5 && velocity == 44) {
+  } else if(track_num == 5 && velocity == 15) {
     return 56;
   } else if(track_num == 5 && velocity == 0) {
     return 60;
@@ -1675,11 +1688,11 @@ function velocity_track_to_mr_cc(track_num, velocity) {
     return 25;
   } else if(track_num == 6 && velocity == 85) {
     return 29;
-  } else if(track_num == 6 && velocity == 71) {
+  } else if(track_num == 6 && velocity == 60) {
     return 49;
-  } else if(track_num == 6 && velocity == 57) {
+  } else if(track_num == 6 && velocity == 30) {
     return 53;
-  } else if(track_num == 6 && velocity == 44) {
+  } else if(track_num == 6 && velocity == 15) {
     return 57;
   } else if(track_num == 6 && velocity == 0) {
     return 61;

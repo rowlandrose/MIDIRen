@@ -34,7 +34,7 @@ var mr_current_msec = 0;
 
 var presets = [
   {
-    'track_velocity' : [127,127,127,127,127,127],
+    'track_velocity' : [127,127,30,15,127,127],
     'track_pattern' : [0,0,0,0,0,0],
     'track_note_ran' : [0,0,0,0,0,0],
     'root_note' : 48,
@@ -384,6 +384,11 @@ var current_t4_num = current_pattern_t4;
 var current_t5_num = current_pattern_t5;
 var current_t6_num = current_pattern_t6;
 
+var prev_played_num_t3 = current_pattern_t3;
+var prev_played_num_t4 = current_pattern_t4;
+var prev_played_num_t5 = current_pattern_t5;
+var prev_played_num_t6 = current_pattern_t6;
+
 var prev_t3_p = 0;
 var prev_t4_p = 0;
 var prev_t5_p = 0;
@@ -411,8 +416,7 @@ var ext_bpm = false;
 var bpm_clock = 24;
 var current_clock = CLOCK_PER_CLICK;
 var current_pulse = 0;
-var root_note = 48;
 var current_chord_progression = 1; // 0 to 47
 var prog_spot = 0;
 var current_chord = chord_progressions[current_chord_progression][prog_spot];
-var current_root = root_note + chord_positions[current_chord];
+var current_root = 48 + chord_positions[current_chord];

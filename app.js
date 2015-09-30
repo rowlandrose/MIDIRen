@@ -132,7 +132,7 @@ midi_input.on('message', function(deltaTime, message) {
     current_pulse = 0;
     prog_spot = 0;
     current_chord = chord_progressions[current_chord_progression][prog_spot];
-    current_root = root_note + chord_positions[current_chord];
+    current_root = pdata.root_note + chord_positions[current_chord];
   }
   if(message[0] == 191 && message[1] == 78 && message[2] > 0) {
     midiren_play = true;
@@ -140,7 +140,7 @@ midi_input.on('message', function(deltaTime, message) {
 
   // Set root note for any note coming in on channel 16
   if(message[0] == 159 && message[2] > 0) {
-    root_note = message[1];
+    pdata.root_note = message[1];
   }
 
   // Set chord progression
@@ -282,7 +282,7 @@ midi_input.on('message', function(deltaTime, message) {
   // Sync to external BPM
   if(ext_bpm && message[0] == 248) {
 
-    if(current_clock == CLOCK_PER_CLICK) {
+    if(current_clock >= CLOCK_PER_CLICK) {
 
       current_clock = 0;
       //////////////////////
