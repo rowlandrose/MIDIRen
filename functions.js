@@ -30,6 +30,9 @@ function init_preset() {
   mr_set_preset(preset_to_mr_cc(selected_preset));
   // Init BPM screen
   mr_set_bpm(999);
+
+  current_chord = chord_progressions[pdata.chord_prog][prog_spot];
+  current_root = pdata.root_note + chord_positions[current_chord];
 }
 
 function tap_bpm() {
@@ -225,7 +228,6 @@ function midi_logic_per_tick() {
     } else {
       chord_n = parseInt(chord_n);
     }
-
     var chord_spot = chord_n % chord_notes[current_chord].length;
     var translated_num = chord_notes[current_chord][chord_spot];
     var chord_octaves = Math.floor(chord_n / chord_notes[current_chord].length);
@@ -271,10 +273,10 @@ function midi_logic_per_tick() {
     current_note_t6 = pdata.track_note_ran[5];
 
     prog_spot++;
-    if(prog_spot >= chord_progressions[current_chord_progression].length) {
+    if(prog_spot >= chord_progressions[pdata.chord_prog].length) {
       prog_spot = 0;
     }
-    current_chord = chord_progressions[current_chord_progression][prog_spot];
+    current_chord = chord_progressions[pdata.chord_prog][prog_spot];
     current_root = pdata.root_note + chord_positions[current_chord];
   } else {
     current_pulse++;
@@ -315,7 +317,7 @@ function mr_set_preset(mr_cc) {
 
   for(var i = 0; i < track_ccs.length; i++) {
     for(var j = 0; j < track_ccs[i].length; j++) {
-      if(track_ccs[i][j] == mr_cc) {
+      if(track_ccs[i][j] === parseInt(mr_cc)) {
 
         selected_preset = ps_s[i][j];
         if(prev_preset != selected_preset) {
@@ -357,13 +359,13 @@ function mr_set_bpm(mr_cc) {
     pdata.bpm += 10;
   } else if(mr_cc == 44) {
     midiren_play = true;
+    prog_spot = 0;
+    current_pulse = 0;
+    current_chord = chord_progressions[pdata.chord_prog][prog_spot];
+    current_root = pdata.root_note + chord_positions[current_chord];
   } else if(mr_cc == 45) {
     midiren_play = false;
     midi_panic();
-    current_pulse = 0;
-    prog_spot = 0;
-    current_chord = chord_progressions[current_chord_progression][prog_spot];
-    current_root = pdata.root_note + chord_positions[current_chord];
   } else if(mr_cc == 46) {
     ext_bpm = true;
     clearTimeout(midi_output_timeout);
@@ -464,8 +466,9 @@ function mr_set_chord_prog(mr_cc) {
   // Build chord prog screen and update root note
   for(var i = 0; i < track_ccs.length; i++) {
     for(var j = 0; j < track_ccs[i].length; j++) {
-      if(track_ccs[i][j] == mr_cc) {
+      if(track_ccs[i][j] === parseInt(mr_cc)) {
         pdata.chord_prog = chord_progs[i][j];
+        prog_spot = 999;
         mrs[mr_chord_prog_sn][mr_cc] = 127;
       } else {
         mrs[mr_chord_prog_sn][track_ccs[i][j]] = 0;
@@ -492,7 +495,7 @@ function mr_set_root_note(mr_cc) {
   // Build root note screen and update root note
   for(var i = 0; i < track_ccs.length; i++) {
     for(var j = 0; j < track_ccs[i].length; j++) {
-      if(track_ccs[i][j] == mr_cc) {
+      if(track_ccs[i][j] === parseInt(mr_cc)) {
         pdata.root_note = root_notes[i][j];
         mrs[mr_root_note_sn][mr_cc] = 127;
       } else {

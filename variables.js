@@ -38,7 +38,7 @@ var presets = [
     'track_pattern' : [0,0,0,0,0,0],
     'track_note_ran' : [0,0,0,0,0,0],
     'root_note' : 48,
-    'chord_prog' : 1,
+    'chord_prog' : 5,
     'bpm' : 120,
     'patterns' : {
       't1_bd' : [
@@ -325,22 +325,61 @@ var chord_positions = {
 };
 
 var chord_progressions = [
-  ['I'],
   ['I','ii','I','IV'],
   ['I','ii','I','vii_d','I','IV'],
   ['I','vii_d','V','vii_d','I','V'],
   ['I','vi','ii','V'],
   ['I','iii','ii'],
   ['I','V'],
+
   ['I','IV','vii_d'],
-  ['i'],
+  ['I','IV','V','vii_d','V','vii_d','V'],
+  ['I','iii','vi','ii'],
+  ['I','iii','iii','vi','vi','ii','ii'],
+  ['I','I','ii','ii','I','I','IV','IV'],
+  ['I','I','ii','ii','I','I','vii_d','vii_d','I','I','IV','IV'],
+
+  ['I','I','vii_d','vii_d','V','V','vii_d','vii_d','I','I','V','V'],
+  ['I','I','vi','vi','ii','ii','V','V'],
+  ['I','I','iii','iii','ii','ii'],
+  ['I','I','V','V'],
+  ['I','I','IV','IV','vii_d','vii_d'],
+  ['I','I','iii','iii','vi',,'vi','ii','ii'],
+
   ['i','ii_d','vii_d','V','vii_d'],
   ['i','iv','vii_d','VI','ii_d'],
   ['i','bVII','iv','i','VI','ii_d','vii_d'],
   ['i','vii_d','V','i','V','VI','ii_d'],
   ['i','ii_d','V'],
   ['i','VI','ii_d','i','vii_d'],
-  ['i','ii_d','vii_d','V']
+
+  ['i','ii_d','vii_d','V'],
+  ['i','V','vii_d','V'],
+  ['i','ii_d','i','V'],
+  ['i','i','ii_d','ii_d','vii_d','vii_d','V','V','vii_d','vii_d'],
+  ['i','i','iv','iv','vii_d','vii_d','VI','VI','ii_d','ii_d'],
+  ['i','i','bVII','bVII','iv','iv','i','i','VI','VI','ii_d','ii_d','vii_d','vii_d'],
+
+  ['i','i','vii_d','vii_d','V','V','i','i','V','V','VI','VI','ii_d','ii_d'],
+  ['i','i','ii_d','ii_d','V','V'],
+  ['i','i','VI','VI','ii_d','ii_d','i','i','vii_d','vii_d'],
+  ['i','i','ii_d','ii_d','vii_d','vii_d','V','V'],
+  ['bVII'],
+  ['vii_d'],
+
+  ['I'],
+  ['ii'],
+  ['iii'],
+  ['IV'],
+  ['V'],
+  ['vi'],
+
+  ['i'],
+  ['ii_d'],
+  ['III'],
+  ['iv'],
+  ['V'],
+  ['VI']
 ];
 // Progressions generated via:
 // http://www.rowlandrose.com/experiments/chord_progression_experiment/
@@ -416,7 +455,6 @@ var ext_bpm = false;
 var bpm_clock = 24;
 var current_clock = CLOCK_PER_CLICK;
 var current_pulse = 0;
-var current_chord_progression = 1; // 0 to 47
 var prog_spot = 0;
-var current_chord = chord_progressions[current_chord_progression][prog_spot];
-var current_root = 48 + chord_positions[current_chord];
+var current_chord = 0;
+var current_root = 0;

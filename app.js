@@ -131,7 +131,7 @@ midi_input.on('message', function(deltaTime, message) {
     midi_panic();
     current_pulse = 0;
     prog_spot = 0;
-    current_chord = chord_progressions[current_chord_progression][prog_spot];
+    current_chord = chord_progressions[pdata.chord_prog][prog_spot];
     current_root = pdata.root_note + chord_positions[current_chord];
   }
   if(message[0] == 191 && message[1] == 78 && message[2] > 0) {
@@ -145,67 +145,67 @@ midi_input.on('message', function(deltaTime, message) {
 
   // Set chord progression
   if(message[0] == 191 && message[1] == 17 && message[2] > 0) {
-    current_chord_progression = 0;
+    pdata.chord_prog = 0;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 18 && message[2] > 0) {
-    current_chord_progression = 1;
+    pdata.chord_prog = 1;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 19 && message[2] > 0) {
-    current_chord_progression = 2;
+    pdata.chord_prog = 2;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 80 && message[2] > 0) {
-    current_chord_progression = 3;
+    pdata.chord_prog = 3;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 81 && message[2] > 0) {
-    current_chord_progression = 4;
+    pdata.chord_prog = 4;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 82 && message[2] > 0) {
-    current_chord_progression = 5;
+    pdata.chord_prog = 5;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 83 && message[2] > 0) {
-    current_chord_progression = 6;
+    pdata.chord_prog = 6;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 12 && message[2] > 0) {
-    current_chord_progression = 7;
+    pdata.chord_prog = 7;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 13 && message[2] > 0) {
-    current_chord_progression = 8;
+    pdata.chord_prog = 8;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 46 && message[2] > 0) {
-    current_chord_progression = 9;
+    pdata.chord_prog = 9;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 71 && message[2] > 0) {
-    current_chord_progression = 10;
+    pdata.chord_prog = 10;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 72 && message[2] > 0) {
-    current_chord_progression = 11;
+    pdata.chord_prog = 11;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 73 && message[2] > 0) {
-    current_chord_progression = 12;
+    pdata.chord_prog = 12;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 74 && message[2] > 0) {
-    current_chord_progression = 13;
+    pdata.chord_prog = 13;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 75 && message[2] > 0) {
-    current_chord_progression = 14;
+    pdata.chord_prog = 14;
     prog_spot = 999;
   }
   if(message[0] == 191 && message[1] == 76 && message[2] > 0) {
-    current_chord_progression = 15;
+    pdata.chord_prog = 15;
     prog_spot = 999;
   }
 
