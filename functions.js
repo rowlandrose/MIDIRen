@@ -975,6 +975,14 @@ function mr_set_velocity(mr_cc) {
     // Track 1
     case 44:
       track_num = 1;
+      if(pdata.track_velocity[track_num-1] > 0) {
+        prev_velocity[track_num-1] = pdata.track_velocity[track_num-1];
+      } else if(prev_velocity[track_num-1] > 0) {
+        var num = prev_velocity[track_num-1];
+        prev_velocity[track_num-1] = 0;
+        mr_set_velocity(velocity_track_to_mr_cc(track_num,num));
+        return;
+      }
       velocity = 0;
       on_ccs.push(44);
       off_ccs.push(40);
@@ -1073,6 +1081,14 @@ function mr_set_velocity(mr_cc) {
     // Track 2
     case 45:
       track_num = 2;
+      if(pdata.track_velocity[track_num-1] > 0) {
+        prev_velocity[track_num-1] = pdata.track_velocity[track_num-1];
+      } else if(prev_velocity[track_num-1] > 0) {
+        var num = prev_velocity[track_num-1];
+        prev_velocity[track_num-1] = 0;
+        mr_set_velocity(velocity_track_to_mr_cc(track_num,num));
+        return;
+      }
       velocity = 0;
       on_ccs.push(45);
       off_ccs.push(41);
@@ -1171,6 +1187,14 @@ function mr_set_velocity(mr_cc) {
     // Track 3
     case 46:
       track_num = 3;
+      if(pdata.track_velocity[track_num-1] > 0) {
+        prev_velocity[track_num-1] = pdata.track_velocity[track_num-1];
+      } else if(prev_velocity[track_num-1] > 0) {
+        var num = prev_velocity[track_num-1];
+        prev_velocity[track_num-1] = 0;
+        mr_set_velocity(velocity_track_to_mr_cc(track_num,num));
+        return;
+      }
       velocity = 0;
       on_ccs.push(46);
       off_ccs.push(42);
@@ -1269,6 +1293,14 @@ function mr_set_velocity(mr_cc) {
     // Track 4
     case 47:
       track_num = 4;
+      if(pdata.track_velocity[track_num-1] > 0) {
+        prev_velocity[track_num-1] = pdata.track_velocity[track_num-1];
+      } else if(prev_velocity[track_num-1] > 0) {
+        var num = prev_velocity[track_num-1];
+        prev_velocity[track_num-1] = 0;
+        mr_set_velocity(velocity_track_to_mr_cc(track_num,num));
+        return;
+      }
       velocity = 0;
       on_ccs.push(47);
       off_ccs.push(43);
@@ -1367,6 +1399,14 @@ function mr_set_velocity(mr_cc) {
     // Track 5
     case 60:
       track_num = 5;
+      if(pdata.track_velocity[track_num-1] > 0) {
+        prev_velocity[track_num-1] = pdata.track_velocity[track_num-1];
+      } else if(prev_velocity[track_num-1] > 0) {
+        var num = prev_velocity[track_num-1];
+        prev_velocity[track_num-1] = 0;
+        mr_set_velocity(velocity_track_to_mr_cc(track_num,num));
+        return;
+      }
       velocity = 0;
       on_ccs.push(60);
       off_ccs.push(56);
@@ -1465,6 +1505,14 @@ function mr_set_velocity(mr_cc) {
     // Track 6
     case 61:
       track_num = 6;
+      if(pdata.track_velocity[track_num-1] > 0) {
+        prev_velocity[track_num-1] = pdata.track_velocity[track_num-1];
+      } else if(prev_velocity[track_num-1] > 0) {
+        var num = prev_velocity[track_num-1];
+        prev_velocity[track_num-1] = 0;
+        mr_set_velocity(velocity_track_to_mr_cc(track_num,num));
+        return;
+      }
       velocity = 0;
       on_ccs.push(61);
       off_ccs.push(57);

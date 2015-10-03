@@ -433,6 +433,8 @@ var prev_t4_p = 0;
 var prev_t5_p = 0;
 var prev_t6_p = 0;
 
+var prev_velocity = [0,0,0,0,0,0];
+
 // Constants
 var MIDIREN_CH = 16;
 var BEATS_PER_MEASURE = 4;
