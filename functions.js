@@ -281,6 +281,33 @@ function midi_logic_per_tick() {
   } else {
     current_pulse++;
   }
+
+  light_pattern_jump();
+}
+
+function light_pattern_jump() {
+
+  if(current_pulse % (PPQ / 2) == 0) {
+
+    if(que_jump > 0) {
+      jump_pos = jump_ccs.indexOf(que_jump);
+      current_pulse = jump_pos * (PPQ / 2);
+      midi_panic();
+      que_jump = 0;
+    }
+
+    jump_pos = Math.floor(current_pulse / (PPQ / 2));
+
+    var cc_level = 0;
+    for(var i = 0; i < jump_ccs.length; i++) {
+      if(jump_pos == i) {
+        cc_level = 127;
+      } else {
+        cc_level = 0;
+      }
+      midiren_output.sendMessage([175 + MIDIREN_CH, jump_ccs[i], cc_level]);
+    }
+  }
 }
 
 function midi_panic() {
@@ -363,9 +390,15 @@ function mr_set_bpm(mr_cc) {
     current_pulse = 0;
     current_chord = chord_progressions[pdata.chord_prog][prog_spot];
     current_root = pdata.root_note + chord_positions[current_chord];
+    // light up initial jump position
+    light_pattern_jump();
   } else if(mr_cc == 45) {
     midiren_play = false;
     midi_panic();
+    // Clear all jump cc's
+    for(var i = 0; i < jump_ccs.length; i++) {
+      midiren_output.sendMessage([175 + MIDIREN_CH, jump_ccs[i], 0]);
+    }
   } else if(mr_cc == 46) {
     ext_bpm = true;
     clearTimeout(midi_output_timeout);

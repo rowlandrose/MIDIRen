@@ -1,3 +1,8 @@
+// Track jumper
+var jump_pos = 0;
+var jump_ccs = [62,58,54,50,30,26,22,18];
+var que_jump = 0;
+
 // MIDIRen Screens
 var track_ccs = [
   [44,40,36,32,12,8,4,0],

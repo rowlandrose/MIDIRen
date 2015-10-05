@@ -79,22 +79,18 @@ midiren_input.on('message', function(deltaTime, message) {
       mr_screen_refresh();
       mr_option_refresh();
 
-    } else if(message[1] == 18) {
-      // position column
-    } else if(message[1] == 22) {
-      // position column
-    } else if(message[1] == 26) {
-      // position column
-    } else if(message[1] == 30) {
-      // position column
-    } else if(message[1] == 50) {
-      // position column
-    } else if(message[1] == 54) {
-      // position column
-    } else if(message[1] == 58) {
-      // position column
-    } else if(message[1] == 62) {
-      // position column
+    } else if(
+      message[1] == 18 ||
+      message[1] == 22 ||
+      message[1] == 26 ||
+      message[1] == 30 ||
+      message[1] == 50 ||
+      message[1] == 54 ||
+      message[1] == 58 ||
+      message[1] == 62
+    ) {
+      // pattern jump
+      que_jump = message[1];
     } else if(mr_current_sn == 0) {
       mr_set_velocity(message[1]);
     } else if(mr_current_sn == 1) {
